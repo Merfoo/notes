@@ -20,27 +20,38 @@ function App() {
         }
     `;
 
-    const contentStyles = css`
+    const pageStyles = css`
         width: 90%;
         max-width: 1000px;
         margin: auto;
-    `;
+        
+        display: flex;
+        flex-direction: column;
 
-    const mainStyles = css`
-        height: 100vh
+        .content {
+            margin-top: 75px;
+
+            flex-grow: 1;
+        }
+
+        .main {
+            height: 100vh;
+        }
     `;
 
     return (
         <BrowserRouter>
             <Global styles={globalStyles} />
-            <div css={contentStyles}>
+            <div css={pageStyles}>
                 <Navbar />
-                <main css={mainStyles}>
-                    <Switch>
-                        <Route path="/" component={Home} />
-                    </Switch>
-                </main>
-                <Footer />
+                <div className="content">
+                    <main className="main">
+                        <Switch>
+                            <Route path="/" component={Home} />
+                        </Switch>
+                    </main>
+                    <Footer />
+                </div>
             </div>
         </BrowserRouter>
     );
