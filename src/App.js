@@ -4,9 +4,9 @@ import { BrowserRouter, Switch, Route } from "react-router-dom";
 import { Global, css, jsx } from "@emotion/core";
 
 import Navbar from "./components/Navbar"; 
+import Footer from "./components/Footer";
 
 import Home from "./pages/Home";
-
 
 function App() {
     const globalStyles = css`
@@ -20,17 +20,30 @@ function App() {
         }
     `;
 
-  return (
-    <BrowserRouter>
-        <Global styles={globalStyles} />
-        <Navbar />
-        <main>
-            <Switch>
-                <Route path="/" component={Home} />
-            </Switch>
-        </main>
-    </BrowserRouter>
-  );
+    const contentStyles = css`
+        width: 90%;
+        max-width: 1000px;
+        margin: auto;
+    `;
+
+    const mainStyles = css`
+        height: 100vh
+    `;
+
+    return (
+        <BrowserRouter>
+            <Global styles={globalStyles} />
+            <div css={contentStyles}>
+                <Navbar />
+                <main css={mainStyles}>
+                    <Switch>
+                        <Route path="/" component={Home} />
+                    </Switch>
+                </main>
+                <Footer />
+            </div>
+        </BrowserRouter>
+    );
 }
 
 export default App;
