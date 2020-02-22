@@ -1,9 +1,12 @@
 /** @jsx jsx */
 
+import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { css, jsx } from "@emotion/core";
 
 function Navbar() {
+    const [isDrawerVisible, setIsDrawerVisible] = useState(false);
+
     const navStyles = css`
         position: fixed;
         top: 0;
@@ -26,7 +29,7 @@ function Navbar() {
             justify-content: center;
             align-items: center;
 
-            :hover {
+            :hover, &.active-navlink {
                 background: white;
             }
         }
@@ -43,6 +46,7 @@ function Navbar() {
         .title-section {
             display: flex;
             flex-direction: row;
+            justify-content: space-between;
         }
 
         .drawer {
@@ -64,6 +68,32 @@ function Navbar() {
         .menu {
             display: none;
         }
+
+        @media (max-width: 786px) {
+            .container, .drawer, .links-section {
+                flex-direction: column;
+            }
+
+            .drawer {
+                padding-bottom: ${isDrawerVisible ? "0" : "5px"}; // When the drawer is hidden, the padding causes some of it to be shown...
+                transition: height 0.5s;
+                height: ${isDrawerVisible ? "0" : "150px"}; // This value will have to change if the user is logged in since more entries are available...
+                overflow: hidden;
+            }
+
+            .menu {
+                user-select: none;
+                font-size: 24px;
+
+                display: flex;
+                justify-content: center;
+                align-items: center;
+
+                :hover {
+                    cursor: pointer;
+                }
+            }
+        }
     `;
 
     return (
@@ -71,16 +101,16 @@ function Navbar() {
             <div className="container">
                 <div className="title-section">
                     <NavLink className="title-link" to="/">Notes</NavLink>
-                    <div className="menu">☰</div>
+                    <div className="menu" onClick={() => setIsDrawerVisible(!isDrawerVisible)}>☰</div>
                 </div>
                 <div className="drawer">
                     <div className="links-section"></div>
                     <div className="links-section">
-                        <NavLink to="/all">All</NavLink>
+                        <NavLink to="/all" activeClassName="active-navlink">All</NavLink>
                     </div>
                     <div className="links-section">
-                        <NavLink to="/signup">Signup</NavLink>
-                        <NavLink to="/login">Login</NavLink>
+                        <NavLink to="/signup" activeClassName="active-navlink">Signup</NavLink>
+                        <NavLink to="/login" activeClassName="active-navlink">Login</NavLink>
                     </div>
                 </div>
             </div>
