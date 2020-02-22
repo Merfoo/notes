@@ -1,25 +1,35 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+/** @jsx jsx */
+
+import { BrowserRouter, Switch, Route } from "react-router-dom";
+import { Global, css, jsx } from "@emotion/core";
+
+import Navbar from "./components/Navbar"; 
+
+import Home from "./pages/Home";
+
 
 function App() {
+    const globalStyles = css`
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+            'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+            sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+    `;
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+        <Global styles={globalStyles} />
+        <Navbar />
+        <main>
+            <Switch>
+                <Route path="/" component={Home} />
+            </Switch>
+        </main>
+    </BrowserRouter>
   );
 }
 
