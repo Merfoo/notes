@@ -16,10 +16,6 @@ function Navbar() {
 
         width: 100%;
 
-        display: flex;
-
-        background: lightgrey;
-
         a {
             padding: 10px 15px;
 
@@ -37,9 +33,9 @@ function Navbar() {
         }
 
         .container {
-            height: 100%;
             width: 100%;
-            margin: auto 20px;
+
+            background: lightgrey;
             
             display: flex;
             flex-direction: row;
@@ -78,6 +74,15 @@ function Navbar() {
                 height: ${isDrawerVisible ? "150px" : "0"}; // This value will have to change if the user is logged in since more entries are available...
                 overflow: hidden;
             }
+
+            .empty-space {
+                height: ${isDrawerVisible ? "100vh" : "0"};
+                width: 100%;
+
+                background: black;
+                transition: opacity .25s;
+                opacity: ${isDrawerVisible ? "0.75" : "0"};
+            }
         }
     `;
 
@@ -99,6 +104,7 @@ function Navbar() {
                     </div>
                 </div>
             </div>
+            <div className="empty-space" onClick={() => setIsDrawerVisible(false)}></div>
         </nav>
     );
 }

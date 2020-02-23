@@ -10,7 +10,7 @@ function Hamburger({ isDrawerVisible, setIsDrawerVisible }) {
             width: 30px;
             height: 20px;
             position: relative;
-            margin: auto 0px auto auto;
+            margin: auto 20px auto auto;
             transform: rotate(0deg);
             transition: .5s ease-in-out;
             cursor: pointer;
