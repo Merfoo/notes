@@ -4,6 +4,8 @@ import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { css, jsx } from "@emotion/core";
 
+import Hamburger from "./Hamburger";
+
 function Navbar() {
     const [isDrawerVisible, setIsDrawerVisible] = useState(false);
 
@@ -65,10 +67,6 @@ function Navbar() {
             font-size: 24px;
         }
 
-        .menu {
-            display: none;
-        }
-
         @media (max-width: 786px) {
             .container, .drawer, .links-section {
                 flex-direction: column;
@@ -80,19 +78,6 @@ function Navbar() {
                 height: ${isDrawerVisible ? "150px" : "0"}; // This value will have to change if the user is logged in since more entries are available...
                 overflow: hidden;
             }
-
-            .menu {
-                user-select: none;
-                font-size: 24px;
-
-                display: flex;
-                justify-content: center;
-                align-items: center;
-
-                :hover {
-                    cursor: pointer;
-                }
-            }
         }
     `;
 
@@ -101,7 +86,7 @@ function Navbar() {
             <div className="container">
                 <div className="title-section">
                     <NavLink className="title-link" to="/">Notes</NavLink>
-                    <div className="menu" onClick={() => setIsDrawerVisible(!isDrawerVisible)}>☰</div>
+                    <Hamburger isDrawerVisible={isDrawerVisible} setIsDrawerVisible={setIsDrawerVisible} />
                 </div>
                 <div className="drawer">
                     <div className="links-section"></div>
