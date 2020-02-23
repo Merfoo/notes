@@ -14,6 +14,8 @@ function Hamburger({ isDrawerVisible, setIsDrawerVisible }) {
             transform: rotate(0deg);
             transition: .5s ease-in-out;
             cursor: pointer;
+            user-select: none;
+            -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
 
             span {
                 display: block;
