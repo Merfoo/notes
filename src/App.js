@@ -11,6 +11,7 @@ import Footer from "./components/Footer";
 
 import Home from "./pages/Home";
 import Signup from "./pages/Signup";
+import Login from "./pages/Login";
 
 function App() {
     const globalStyles = css`
@@ -28,14 +29,9 @@ function App() {
         width: 90%;
         max-width: 1000px;
         margin: auto;
-        
-        display: flex;
-        flex-direction: column;
 
         .content {
             margin-top: 75px;
-
-            flex-grow: 1;
         }
 
         .main {
@@ -57,6 +53,7 @@ function App() {
                         <main className="main">
                             <Switch>
                                 <Route path="/signup" component={Signup} />
+                                <Route path="/login" component={Login} />
                                 <Route path="/" component={Home} />
                             </Switch>
                         </main>
