@@ -40,14 +40,18 @@ function Signup() {
         }
     `;
 
-    const [signup, { data, loading, error }] = useMutation(SIGNUP);
+    const [signup, { data, loading }] = useMutation(SIGNUP);
 
     const { register, handleSubmit, errors, watch } = useForm();
 
     const onSubmit = ({ email, username, password }) => {
         console.log("on submit");
         console.log(email, username, password);
-        signup({ variables: { email, username, password } });
+        signup({ variables: { email, username, password } })
+            .catch((e) => {
+                console.log("rejected");
+                console.log(e);
+            });
     };
 
     console.log("Signup Data");
@@ -55,9 +59,6 @@ function Signup() {
 
     console.log("loading");
     console.log(loading);
-
-    console.log("error");
-    console.log(error);
 
     return (
         <div css={styles}>
