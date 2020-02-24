@@ -7,6 +7,7 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 
 import Home from "./pages/Home";
+import Signup from "./pages/Signup";
 
 function App() {
     const globalStyles = css`
@@ -47,6 +48,7 @@ function App() {
                 <div className="content">
                     <main className="main">
                         <Switch>
+                            <Route path="/signup" component={Signup} />
                             <Route path="/" component={Home} />
                         </Switch>
                     </main>
