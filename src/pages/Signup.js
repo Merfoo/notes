@@ -3,6 +3,9 @@
 import { useForm } from "react-hook-form";
 import { css, jsx } from "@emotion/core";
 
+import gql from "graphql-tag";
+import { useMutation } from "@apollo/react-hooks";
+
 function Signup() {
     const styles = css`
         .input-section {
@@ -25,11 +28,36 @@ function Signup() {
         }
     `;
 
+    const SIGNUP = gql`
+        mutation Signup($email: String!, $username: String!, $password: String!) {
+            signup(email: $email, username: $username, password: $password) {
+                token
+                user {
+                    email
+                    username
+                }
+            }
+        }
+    `;
+
+    const [signup, { data, loading, error }] = useMutation(SIGNUP);
+
     const { register, handleSubmit, errors, watch } = useForm();
 
-    const onSubmit = ({ email, password, password_verify }) => {
-        console.log(email, password, password_verify);
+    const onSubmit = ({ email, username, password }) => {
+        console.log("on submit");
+        console.log(email, username, password);
+        signup({ variables: { email, username, password } });
     };
+
+    console.log("Signup Data");
+    console.log(data);
+
+    console.log("loading");
+    console.log(loading);
+
+    console.log("error");
+    console.log(error);
 
     return (
         <div css={styles}>
@@ -49,6 +77,18 @@ function Signup() {
                     />
                     <div className="error-message">
                         {errors.email && errors.email.message}
+                    </div>
+                </div>
+                <div className="input-section">
+                    <label>Username</label>
+                    <input
+                        name="username"
+                        ref={register({
+                            required: "Required"
+                        })}
+                    />
+                    <div className="error-message">
+                        {errors.username && errors.username.message}
                     </div>
                 </div>
                 <div className="input-section">

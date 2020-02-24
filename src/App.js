@@ -3,6 +3,9 @@
 import { BrowserRouter, Switch, Route } from "react-router-dom";
 import { Global, css, jsx } from "@emotion/core";
 
+import ApolloClient from "apollo-boost";
+import { ApolloProvider } from "@apollo/react-hooks";
+
 import Navbar from "./components/Navbar"; 
 import Footer from "./components/Footer";
 
@@ -40,21 +43,27 @@ function App() {
         }
     `;
 
+    const apolloClient = new ApolloClient({
+        uri: "https://merfoo-notes-backend.herokuapp.com/"
+    });
+
     return (
         <BrowserRouter>
             <Global styles={globalStyles} />
-            <div css={pageStyles}>
-                <Navbar />
-                <div className="content">
-                    <main className="main">
-                        <Switch>
-                            <Route path="/signup" component={Signup} />
-                            <Route path="/" component={Home} />
-                        </Switch>
-                    </main>
-                    <Footer />
+            <ApolloProvider client={apolloClient}>
+                <div css={pageStyles}>
+                    <Navbar />
+                    <div className="content">
+                        <main className="main">
+                            <Switch>
+                                <Route path="/signup" component={Signup} />
+                                <Route path="/" component={Home} />
+                            </Switch>
+                        </main>
+                        <Footer />
+                    </div>
                 </div>
-            </div>
+            </ApolloProvider>
         </BrowserRouter>
     );
 }
