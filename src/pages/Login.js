@@ -3,6 +3,9 @@
 import { useForm } from "react-hook-form";
 import { css, jsx } from "@emotion/core";
 
+import { useDispatch, useSelector } from "react-redux";
+import { setUserToken } from "../redux/actions";
+
 import gql from "graphql-tag";
 import { useMutation } from "@apollo/react-hooks";
 
@@ -40,22 +43,32 @@ function Login() {
         }
     `;
 
-    const [login, { data, loading }] = useMutation(LOGIN);
+    const [login, { loading }] = useMutation(LOGIN);
+    const dispatch = useDispatch();
+    const userToken = useSelector(state => state.userToken);
+
+    console.log("user token");
+    console.log(userToken);
 
     const { register, handleSubmit, errors } = useForm();
 
     const onSubmit = ({ email, password }) => {
         console.log("on submit");
         console.log(email, password);
+
         login({ variables: { email, password } })
+            .then((data) => {
+                console.log("data");
+                console.log(data);
+
+                const userToken = data.data.login.token;
+                dispatch(setUserToken(userToken));
+            })
             .catch((e) => {
                 console.log("rejected");
                 console.log(e);
             });
     };
-
-    console.log("Login Data");
-    console.log(data);
 
     console.log("loading");
     console.log(loading);

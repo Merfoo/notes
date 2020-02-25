@@ -6,6 +6,9 @@ import { Global, css, jsx } from "@emotion/core";
 import ApolloClient from "apollo-boost";
 import { ApolloProvider } from "@apollo/react-hooks";
 
+import { Provider } from "react-redux";
+import store from "./redux/store";
+
 import Navbar from "./components/Navbar"; 
 import Footer from "./components/Footer";
 
@@ -47,19 +50,21 @@ function App() {
         <BrowserRouter>
             <Global styles={globalStyles} />
             <ApolloProvider client={apolloClient}>
-                <div css={pageStyles}>
-                    <Navbar />
-                    <div className="content">
-                        <main className="main">
-                            <Switch>
-                                <Route path="/signup" component={Signup} />
-                                <Route path="/login" component={Login} />
-                                <Route path="/" component={Home} />
-                            </Switch>
-                        </main>
-                        <Footer />
+                <Provider store={store}>
+                    <div css={pageStyles}>
+                        <Navbar />
+                        <div className="content">
+                            <main className="main">
+                                <Switch>
+                                    <Route path="/signup" component={Signup} />
+                                    <Route path="/login" component={Login} />
+                                    <Route path="/" component={Home} />
+                                </Switch>
+                            </main>
+                            <Footer />
+                        </div>
                     </div>
-                </div>
+                </Provider>
             </ApolloProvider>
         </BrowserRouter>
     );
