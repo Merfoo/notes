@@ -28,18 +28,14 @@ function App() {
         }
     `;
 
-    const pageStyles = css`
+    const mainStyles = css`
+        min-height: 100vh;
+
         width: 90%;
         max-width: 1000px;
+
         margin: auto;
-
-        .content {
-            margin-top: 75px;
-        }
-
-        .main {
-            min-height: 100vh;
-        }
+        margin-top: 75px;
     `;
 
     const apolloClient = new ApolloClient({
@@ -51,19 +47,15 @@ function App() {
             <Global styles={globalStyles} />
             <ApolloProvider client={apolloClient}>
                 <Provider store={store}>
-                    <div css={pageStyles}>
                         <Navbar />
-                        <div className="content">
-                            <main className="main">
-                                <Switch>
-                                    <Route path="/signup" component={Signup} />
-                                    <Route path="/login" component={Login} />
-                                    <Route path="/" component={Home} />
-                                </Switch>
-                            </main>
-                            <Footer />
-                        </div>
-                    </div>
+                        <main css={mainStyles}>
+                            <Switch>
+                                <Route path="/signup" component={Signup} />
+                                <Route path="/login" component={Login} />
+                                <Route path="/" component={Home} />
+                            </Switch>
+                        </main>
+                        <Footer />
                 </Provider>
             </ApolloProvider>
         </BrowserRouter>
