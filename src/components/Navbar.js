@@ -28,14 +28,15 @@ function Navbar() {
             align-items: center;
 
             :hover, &.active-navlink {
-                background: white;
+                background: lightgrey;
             }
         }
 
         .container {
             width: 100%;
 
-            background: lightgrey;
+            background: white;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
             
             display: flex;
             flex-direction: row;
@@ -66,6 +67,10 @@ function Navbar() {
         @media (max-width: 786px) {
             .container, .drawer, .links-section {
                 flex-direction: column;
+            }
+
+            .title-section {
+                box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
             }
 
             .drawer {
