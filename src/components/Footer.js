@@ -25,7 +25,7 @@ function footer() {
         <div css={footerStyles}>
             <div className="content">
                 <div>
-                    Created with love by <a href="https://github.com/Merfoo">Fauzi</a> and <a href="https://github.com/symonr9">Symon</a>
+                    <a href="https://github.com/Merfoo/notes">Created</a> with love by <a href="https://github.com/Merfoo">Fauzi</a> and <a href="https://github.com/symonr9">Symon</a>
                 </div>
             </div>
         </div>
