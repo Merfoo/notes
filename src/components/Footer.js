@@ -5,10 +5,10 @@ import { css, jsx } from "@emotion/core";
 function footer() {
     const footerStyles = css`
         width: 100%;
-        box-shadow: 0 -2px 2px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 -1px 1px rgba(0, 0, 0, 0.2);
 
         .content {
-            padding: 10px;
+            padding: 15px;
             
             display: flex;
             flex-direction: column;
