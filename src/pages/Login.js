@@ -1,5 +1,7 @@
 /** @jsx jsx */
 
+import { useHistory } from "react-router-dom";
+
 import { useForm } from "react-hook-form";
 import { css, jsx } from "@emotion/core";
 
@@ -43,6 +45,8 @@ function Login() {
         }
     `;
 
+    const history = useHistory();
+
     const [login, { loading }] = useMutation(LOGIN);
     const dispatch = useDispatch();
     const userToken = useSelector(state => state.userToken);
@@ -63,6 +67,8 @@ function Login() {
 
                 const { token, user } = data.data.login;
                 dispatch(loginUser(token, user.username));
+
+                history.push("/");
             })
             .catch((e) => {
                 console.log("rejected");
