@@ -91,25 +91,27 @@ function Navbar() {
         }
     `;
 
+    const hideDrawer = () => setIsDrawerVisible(false);
+
     return (
         <nav css={navStyles}>
             <div className="container">
                 <div className="title-section">
-                    <NavLink className="title-link" to="/">Notes</NavLink>
+                    <NavLink className="title-link" to="/" onClick={hideDrawer}>Notes</NavLink>
                     <Hamburger isDrawerVisible={isDrawerVisible} setIsDrawerVisible={setIsDrawerVisible} />
                 </div>
                 <div className="drawer">
                     <div className="links-section"></div>
                     <div className="links-section">
-                        <NavLink to="/all" activeClassName="active-navlink">All</NavLink>
+                        <NavLink to="/all" activeClassName="active-navlink" onClick={hideDrawer}>All</NavLink>
                     </div>
                     <div className="links-section">
-                        <NavLink to="/signup" activeClassName="active-navlink">Signup</NavLink>
-                        <NavLink to="/login" activeClassName="active-navlink">Login</NavLink>
+                        <NavLink to="/signup" activeClassName="active-navlink" onClick={hideDrawer}>Signup</NavLink>
+                        <NavLink to="/login" activeClassName="active-navlink" onClick={hideDrawer}>Login</NavLink>
                     </div>
                 </div>
             </div>
-            <div className="empty-space" onClick={() => setIsDrawerVisible(false)}></div>
+            <div className="empty-space" onClick={hideDrawer}></div>
         </nav>
     );
 }
