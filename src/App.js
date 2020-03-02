@@ -9,6 +9,8 @@ import { ApolloProvider } from "@apollo/react-hooks";
 import { Provider } from "react-redux";
 import store from "./redux/store";
 
+import { loadState } from "./localStorage";
+
 import Navbar from "./components/Navbar"; 
 import Footer from "./components/Footer";
 
@@ -39,7 +41,18 @@ function App() {
     `;
 
     const apolloClient = new ApolloClient({
-        uri: "https://merfoo-notes-backend.herokuapp.com/"
+        uri: "https://merfoo-notes-backend.herokuapp.com/",
+        request: (operation) => {
+            const state = loadState();
+
+            if (state && state.userToken) {
+                operation.setContext({
+                    headers: {
+                        authorization: `Bearer ${state.userToken}`
+                    }
+                });
+            }
+        }
     });
 
     return (
