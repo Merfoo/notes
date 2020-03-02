@@ -1,10 +1,11 @@
 /** @jsx jsx */
 
+import { useHistory } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { css, jsx } from "@emotion/core";
 
-import { useDispatch, useSelector } from "react-redux";
-import { setUserToken } from "../redux/actions";
+import { useDispatch } from "react-redux";
+import { loginUser } from "../redux/actions";
 
 import gql from "graphql-tag";
 import { useMutation } from "@apollo/react-hooks";
@@ -43,12 +44,10 @@ function Login() {
         }
     `;
 
+    const history = useHistory();
+
     const [login, { loading }] = useMutation(LOGIN);
     const dispatch = useDispatch();
-    const userToken = useSelector(state => state.userToken);
-
-    console.log("user token");
-    console.log(userToken);
 
     const { register, handleSubmit, errors } = useForm();
 
@@ -61,8 +60,10 @@ function Login() {
                 console.log("data");
                 console.log(data);
 
-                const userToken = data.data.login.token;
-                dispatch(setUserToken(userToken));
+                const { token, user } = data.data.login;
+                dispatch(loginUser(token, user.username));
+
+                history.push("/");
             })
             .catch((e) => {
                 console.log("rejected");

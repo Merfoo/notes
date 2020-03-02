@@ -53,7 +53,7 @@ function App() {
                         <Navbar />
                         <main css={mainStyles}>
                             <Switch>
-                                <Route path="/create-note" component={CreateNote} />
+                                <Route path="/notes/create" component={CreateNote} />
                                 <Route path="/signup" component={Signup} />
                                 <Route path="/login" component={Login} />
                                 <Route path="/" component={Home} />

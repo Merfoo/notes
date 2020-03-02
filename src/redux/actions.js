@@ -1,6 +1,11 @@
-import { SET_USER_TOKEN } from "./actionTypes";
+import { LOGIN_USER, LOGOUT_USER } from "./actionTypes";
 
-export const setUserToken = userToken => ({
-    type: SET_USER_TOKEN,
-    userToken
+export const loginUser = (userToken, username) => ({
+    type: LOGIN_USER,
+    userToken,
+    username
+});
+
+export const logoutUser = () => ({
+    type: LOGOUT_USER
 });

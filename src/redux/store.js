@@ -13,7 +13,8 @@ const store = createStore(
 
 store.subscribe(() => {
     saveState({
-        userToken: store.getState().userToken
+        userToken: store.getState().userToken,
+        username: store.getState().username
     });
 })
 
