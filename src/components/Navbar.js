@@ -106,6 +106,7 @@ function Navbar() {
                         <NavLink to="/all" activeClassName="active-navlink" onClick={hideDrawer}>All</NavLink>
                     </div>
                     <div className="links-section">
+                        <NavLink to="/create-note" activeClassName="active-navlink" onClick={hideDrawer}>Create Note</NavLink>
                         <NavLink to="/signup" activeClassName="active-navlink" onClick={hideDrawer}>Signup</NavLink>
                         <NavLink to="/login" activeClassName="active-navlink" onClick={hideDrawer}>Login</NavLink>
                     </div>

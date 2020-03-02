@@ -15,6 +15,7 @@ import Footer from "./components/Footer";
 import Home from "./pages/Home";
 import Signup from "./pages/Signup";
 import Login from "./pages/Login";
+import CreateNote from "./pages/CreateNote";
 
 function App() {
     const globalStyles = css`
@@ -39,7 +40,9 @@ function App() {
     `;
 
     const apolloClient = new ApolloClient({
-        uri: "https://merfoo-notes-backend.herokuapp.com/"
+        //Change to local host when developing
+       //uri: "https://merfoo-notes-backend.herokuapp.com/"
+        uri: "https://localhost:4000/"
     });
 
     return (
@@ -50,6 +53,7 @@ function App() {
                         <Navbar />
                         <main css={mainStyles}>
                             <Switch>
+                                <Route path="/create-note" component={CreateNote} />
                                 <Route path="/signup" component={Signup} />
                                 <Route path="/login" component={Login} />
                                 <Route path="/" component={Home} />
