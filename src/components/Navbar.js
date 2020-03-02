@@ -12,6 +12,11 @@ import Hamburger from "./Hamburger";
 function Navbar() {
     const [isDrawerVisible, setIsDrawerVisible] = useState(false);
 
+    const username = useSelector(state => state.username);
+    const isLoggedIn = !!username;
+
+    const openDrawerHeight = isLoggedIn ? "150px" : "100px";
+
     const navStyles = css`
         position: fixed;
         top: 0;
@@ -79,7 +84,7 @@ function Navbar() {
             .drawer {
                 padding-bottom: ${isDrawerVisible ? "5px" : "0"}; // When the drawer is hidden, the padding causes some of it to be shown...
                 transition: height 0.5s;
-                height: ${isDrawerVisible ? "150px" : "0"}; // This value will have to change if the user is logged in since more entries are available...
+                height: ${isDrawerVisible ? openDrawerHeight : "0"}; // This value will have to change if the user is logged in since more entries are available...
                 overflow: hidden;
             }
 
@@ -95,8 +100,6 @@ function Navbar() {
     `;
 
     const dispatch = useDispatch();
-    const username = useSelector(state => state.username);
-    const isLoggedIn = !!username;
 
     const hideDrawer = () => setIsDrawerVisible(false);
 
