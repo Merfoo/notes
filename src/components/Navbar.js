@@ -4,6 +4,9 @@ import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { css, jsx } from "@emotion/core";
 
+import { useDispatch, useSelector } from "react-redux";
+import { logoutUser } from "../redux/actions"
+
 import Hamburger from "./Hamburger";
 
 function Navbar() {
@@ -52,7 +55,7 @@ function Navbar() {
             display: flex;
             flex-direction: row;
             flex-grow: 1;
-            justify-content: space-between;
+            justify-content: flex-end;
         }
 
         .links-section {
@@ -91,7 +94,16 @@ function Navbar() {
         }
     `;
 
+    const dispatch = useDispatch();
+    const username = useSelector(state => state.username);
+    const isLoggedIn = !!username;
+
     const hideDrawer = () => setIsDrawerVisible(false);
+
+    const logout = () => {
+        dispatch(logoutUser());
+        hideDrawer();
+    };
 
     return (
         <nav css={navStyles}>
@@ -101,14 +113,18 @@ function Navbar() {
                     <Hamburger isDrawerVisible={isDrawerVisible} setIsDrawerVisible={setIsDrawerVisible} />
                 </div>
                 <div className="drawer">
-                    <div className="links-section"></div>
-                    <div className="links-section">
-                        <NavLink to="/all" activeClassName="active-navlink" onClick={hideDrawer}>All</NavLink>
-                    </div>
-                    <div className="links-section">
-                        <NavLink to="/signup" activeClassName="active-navlink" onClick={hideDrawer}>Signup</NavLink>
-                        <NavLink to="/login" activeClassName="active-navlink" onClick={hideDrawer}>Login</NavLink>
-                    </div>
+                    { isLoggedIn ? (
+                        <div className="links-section">
+                            <NavLink to="/notes/create" activeClassName="active-navlink" onClick={hideDrawer}>Create</NavLink>
+                            <NavLink to={`/users/${username}/notes`} activeClassName="active-navlink" onClick={hideDrawer}>Collection</NavLink>
+                            <NavLink to="/" onClick={logout}>Logout</NavLink>
+                        </div>
+                    ) : (
+                        <div className="links-section">
+                            <NavLink to="/signup" activeClassName="active-navlink" onClick={hideDrawer}>Signup</NavLink>
+                            <NavLink to="/login" activeClassName="active-navlink" onClick={hideDrawer}>Login</NavLink>
+                        </div>
+                    )}
                 </div>
             </div>
             <div className="empty-space" onClick={hideDrawer}></div>

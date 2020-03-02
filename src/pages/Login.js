@@ -1,11 +1,10 @@
 /** @jsx jsx */
 
 import { useHistory } from "react-router-dom";
-
 import { useForm } from "react-hook-form";
 import { css, jsx } from "@emotion/core";
 
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { loginUser } from "../redux/actions";
 
 import gql from "graphql-tag";
@@ -49,10 +48,6 @@ function Login() {
 
     const [login, { loading }] = useMutation(LOGIN);
     const dispatch = useDispatch();
-    const userToken = useSelector(state => state.userToken);
-
-    console.log("user token");
-    console.log(userToken);
 
     const { register, handleSubmit, errors } = useForm();
 
