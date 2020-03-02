@@ -1,7 +1,11 @@
 /** @jsx jsx */
 
+import { useHistory } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { css, jsx } from "@emotion/core";
+
+import { useDispatch } from "react-redux";
+import { loginUser } from "../redux/actions";
 
 import gql from "graphql-tag";
 import { useMutation } from "@apollo/react-hooks";
@@ -40,22 +44,32 @@ function Signup() {
         }
     `;
 
-    const [signup, { data, loading }] = useMutation(SIGNUP);
+    const history = useHistory();
+
+    const [signup, { loading }] = useMutation(SIGNUP);
+    const dispatch = useDispatch();
 
     const { register, handleSubmit, errors, watch } = useForm();
 
     const onSubmit = ({ email, username, password }) => {
-        console.log("on submit");
+        console.log("signup on submit");
         console.log(email, username, password);
+
         signup({ variables: { email, username, password } })
+            .then((res) => {
+                console.log("signup res");
+                console.log(res);
+
+                const { token, user } = res.data.signup;
+                dispatch(loginUser(token, user.username));
+
+                history.push("/");
+            })
             .catch((e) => {
-                console.log("rejected");
+                console.log("signup rejected");
                 console.log(e);
             });
     };
-
-    console.log("Signup Data");
-    console.log(data);
 
     console.log("loading");
     console.log(loading);

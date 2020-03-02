@@ -52,21 +52,21 @@ function Login() {
     const { register, handleSubmit, errors } = useForm();
 
     const onSubmit = ({ email, password }) => {
-        console.log("on submit");
+        console.log("login on submit");
         console.log(email, password);
 
         login({ variables: { email, password } })
-            .then((data) => {
-                console.log("data");
-                console.log(data);
+            .then((res) => {
+                console.log("login res");
+                console.log(res);
 
-                const { token, user } = data.data.login;
+                const { token, user } = res.data.login;
                 dispatch(loginUser(token, user.username));
 
                 history.push("/");
             })
             .catch((e) => {
-                console.log("rejected");
+                console.log("login rejected");
                 console.log(e);
             });
     };
