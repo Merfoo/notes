@@ -12,56 +12,60 @@ import { useMutation } from "@apollo/react-hooks";
 
 import NiceButton from "../components/NiceButton";
 
+const styles = css`
+    .input-section {
+        height: 100px;
+
+        display: flex;
+        flex-direction: column;
+
+        label {
+            margin-bottom: 5px;
+        }
+
+        input {
+            height: 30px;
+        }
+
+        .error-message {
+            color: red;
+        }
+    }
+
+    .invalid-credentials {
+        color: white;
+
+        margin-top: 50px;
+        padding: 10px;
+        border-radius: 3px;
+
+        background-color: rgba(255, 0, 0, 0.5);
+    }
+`;
+
+const LOGIN = gql`
+    mutation Login($email: String!, $password: String!) {
+        login(email: $email, password: $password) {
+            token
+            user {
+                email
+                username
+            }
+        }
+    }
+`;
+
 function Login() {
-    const styles = css`
-        .input-section {
-            height: 100px;
-
-            display: flex;
-            flex-direction: column;
-
-            label {
-                margin-bottom: 5px;
-            }
-
-            input {
-                height: 30px;
-            }
-
-            .error-message {
-                color: red;
-            }
-        }
-    `;
-
-    const LOGIN = gql`
-        mutation Login($email: String!, $password: String!) {
-            login(email: $email, password: $password) {
-                token
-                user {
-                    email
-                    username
-                }
-            }
-        }
-    `;
-
     const history = useHistory();
 
-    const [login, { loading }] = useMutation(LOGIN);
+    const [login, { loading, error }] = useMutation(LOGIN);
     const dispatch = useDispatch();
 
     const { register, handleSubmit, errors } = useForm();
 
     const onSubmit = ({ email, password }) => {
-        console.log("login on submit");
-        console.log(email, password);
-
         login({ variables: { email, password } })
             .then((res) => {
-                console.log("login res");
-                console.log(res);
-
                 const { token, user } = res.data.login;
                 dispatch(loginUser(token, user.username));
 
@@ -72,9 +76,6 @@ function Login() {
                 console.log(e);
             });
     };
-
-    console.log("loading");
-    console.log(loading);
 
     return (
         <div css={styles}>
@@ -107,6 +108,9 @@ function Login() {
                 </div>
                 <NiceButton type="submit" isLoading={loading}>Login</NiceButton>
             </form>
+            <div className="invalid-credentials" hidden={!error}>
+                {error && "Invalid Credentials!"}
+            </div>
         </div>
     );
 }
