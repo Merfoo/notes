@@ -8,6 +8,7 @@ const buttonStyles = css`
     padding: 10px 20px;
     font-size: 16px;
     color: #fff;
+    border: none;
     border-radius: 5px;
     background-color: #2080df;
 
