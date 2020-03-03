@@ -10,6 +10,8 @@ import { loginUser } from "../redux/actions";
 import gql from "graphql-tag";
 import { useMutation } from "@apollo/react-hooks";
 
+import NiceButton from "../components/NiceButton";
+
 function Login() {
     const styles = css`
         .input-section {
@@ -23,7 +25,7 @@ function Login() {
             }
 
             input {
-                height: 25px;
+                height: 30px;
             }
 
             .error-message {
@@ -103,7 +105,7 @@ function Login() {
                         {errors.password && errors.password.message}
                     </div>
                 </div>
-                <input type="submit" />
+                <NiceButton type="submit" isLoading={loading}>Login</NiceButton>
             </form>
         </div>
     );
