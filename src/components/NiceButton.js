@@ -77,7 +77,7 @@ function NiceButton({ children, isLoading, ...props }) {
 
             return () => clearTimeout(timeout);
         }
-    });
+    }, [isLoading, showLoader]);
 
     const fadeOutProps = useSpring({ opacity: showLoader ? 1: 0 });
     const fadeInProps = useSpring({ opacity: showLoader ? 0 : 1 });
