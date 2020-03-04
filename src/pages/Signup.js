@@ -1,7 +1,7 @@
 /** @jsx jsx */
 
+import { useState } from "react";
 import { useHistory } from "react-router-dom";
-import { useForm } from "react-hook-form";
 import { css, jsx } from "@emotion/core";
 
 import { useDispatch } from "react-redux";
@@ -10,58 +10,152 @@ import { loginUser } from "../redux/actions";
 import gql from "graphql-tag";
 import { useMutation } from "@apollo/react-hooks";
 
+import { capitalize, validateEmail } from "../util";
+
 import NiceButton from "../components/NiceButton";
 
+const styles = css`
+    .input-section {
+        height: 100px;
+
+        display: flex;
+        flex-direction: column;
+
+        label {
+            margin-bottom: 5px;
+        }
+        
+        input {
+            height: 30px;
+        }
+
+        .error-message {
+            color: red;
+        }
+    }
+
+    .error-box {
+        color: white;
+
+        margin-top: 50px;
+        padding: 10px;
+        border-radius: 3px;
+
+        background-color: rgba(255, 0, 0, 0.5);
+    }
+`;
+
+const SIGNUP = gql`
+    mutation Signup($email: String!, $username: String!, $password: String!) {
+        signup(email: $email, username: $username, password: $password) {
+            token
+            user {
+                email
+                username
+            }
+        }
+    }
+`;
+
+function parseMutationError(e) {
+    let error = {
+        unknown: false,
+        email: false,
+        username: false,
+        message: ""
+    };
+
+    if (!e)
+        return error;
+
+    error.unknown = true;
+    error.message = e.message;
+
+    const split = e.message.split(" ");
+
+    if (split.length > 0) {
+        const field = split[split.length - 1];
+
+        if (field in error) {
+            error[field] = true;
+            error.message = `${capitalize(field)} already taken`;
+            error.unknown = false;
+        }
+    }
+
+    return error;
+}
+
 function Signup() {
-    const styles = css`
-        .input-section {
-            height: 100px;
-
-            display: flex;
-            flex-direction: column;
-
-            label {
-                margin-bottom: 5px;
-            }
-            
-            input {
-                height: 30px;
-            }
-
-            .error-message {
-                color: red;
-            }
-        }
-    `;
-
-    const SIGNUP = gql`
-        mutation Signup($email: String!, $username: String!, $password: String!) {
-            signup(email: $email, username: $username, password: $password) {
-                token
-                user {
-                    email
-                    username
-                }
-            }
-        }
-    `;
-
     const history = useHistory();
-
-    const [signup, { loading }] = useMutation(SIGNUP);
     const dispatch = useDispatch();
 
-    const { register, handleSubmit, errors, watch } = useForm();
+    const [signup, { loading }] = useMutation(SIGNUP);
+    const [mutationError, setMutationError] = useState({
+        unknown: false,
+        email: false,
+        username: false,
+        message: ""
+    });
 
-    const onSubmit = ({ email, username, password }) => {
-        console.log("signup on submit");
-        console.log(email, username, password);
+    const [isFirstAttempt, setIsFirstAttempt] = useState(true);
+    const [email, setEmail] = useState("");
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+    const [passwordVerify, setPasswordVerify] = useState("");
+
+    let emailError = "";
+    let usernameError = "";
+    let passwordError = "";
+    let passwordVerifyError = "";
+
+    if (!email)
+        emailError = "Required";
+
+    else if (!validateEmail(email))
+        emailError = "Invalid email";
+
+    if (!username)
+        usernameError = "Required";
+
+    if (!password)
+        passwordError = "Required";
+
+    if (!passwordVerify)
+        passwordVerifyError = "Required";
+
+    else if (passwordVerify !== password)
+        passwordVerifyError = "Passwords do not match";
+
+    if (mutationError.email) {
+        if (emailError)
+            setMutationError({ ...mutationError, email: false });
+
+        else
+            emailError = mutationError.message;
+    }
+
+    if (mutationError.username) {
+        if (usernameError)
+            setMutationError({ ...mutationError, username: false });
+
+        else
+            usernameError = mutationError.message;
+    }
+
+    
+    const formError = emailError || usernameError || passwordError || passwordVerifyError;
+
+    const onSubmit = (e) => {
+        e.preventDefault();
+
+        setIsFirstAttempt(false);
+
+        if (formError)
+            return;
 
         signup({ variables: { email, username, password } })
             .then((res) => {
-                console.log("signup res");
-                console.log(res);
-
                 const { token, user } = res.data.signup;
                 dispatch(loginUser(token, user.username));
 
@@ -70,73 +164,48 @@ function Signup() {
             .catch((e) => {
                 console.log("signup rejected");
                 console.log(e);
+
+                setMutationError(parseMutationError(e));
             });
     };
-
-    console.log("loading");
-    console.log(loading);
 
     return (
         <div css={styles}>
             <h2>Signup</h2>
-            <form onSubmit={handleSubmit(onSubmit)}>
+            <form onSubmit={onSubmit}>
                 <div className="input-section">
                     <label>Email</label>
-                    <input
-                        name="email"
-                        ref={register({
-                            required: "Required",
-                            pattern: {
-                                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
-                                message: "Invalid email address"
-                            }
-                        })}
-                    />
+                    <input value={email} onChange={(e) => setEmail(e.target.value)} />
                     <div className="error-message">
-                        {errors.email && errors.email.message}
+                        {!isFirstAttempt && emailError}
                     </div>
                 </div>
                 <div className="input-section">
                     <label>Username</label>
-                    <input
-                        name="username"
-                        ref={register({
-                            required: "Required"
-                        })}
-                    />
+                    <input value={username} onChange={(e) => setUsername(e.target.value)} />
                     <div className="error-message">
-                        {errors.username && errors.username.message}
+                        {!isFirstAttempt && usernameError}
                     </div>
                 </div>
                 <div className="input-section">
                     <label>Password</label>
-                    <input
-                        name="password"
-                        type="password"
-                        ref={register({
-                            required: "Required"
-                        })}
-                    />
+                    <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
                     <div className="error-message">
-                        {errors.password && errors.password.message}
+                        {!isFirstAttempt && passwordError}
                     </div>
                 </div>
                 <div className="input-section">
                     <label>Verify Password</label>
-                    <input
-                        name="password_verify"
-                        type="password"
-                        ref={register({
-                            required: "Required",
-                            validate: (value) => { return value === watch("password") || "Passwords don't match" }
-                        })} 
-                    />
+                    <input type="password" value={passwordVerify} onChange={(e) => setPasswordVerify(e.target.value)} />
                     <div className="error-message">
-                        {errors.password_verify && errors.password_verify.message}
+                        {!isFirstAttempt && passwordVerifyError}
                     </div>
                 </div>
                 <NiceButton type="submit" isLoading={loading}>Signup</NiceButton>
             </form>
+            <div className="error-box" hidden={!mutationError.unknown}>
+                {mutationError.message}
+            </div>
         </div>
     );
 }

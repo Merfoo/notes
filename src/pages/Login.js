@@ -109,7 +109,7 @@ function Login() {
                 <NiceButton type="submit" isLoading={loading}>Login</NiceButton>
             </form>
             <div className="invalid-credentials" hidden={!error}>
-                {error && "Invalid Credentials!"}
+                Invalid Credentials
             </div>
         </div>
     );
