@@ -182,33 +182,33 @@ function Signup() {
             <form onSubmit={onSubmit}>
                 <div className="input-section">
                     <label>Email</label>
-                    <input value={email} onChange={updateEmail} />
+                    <input value={email} disabled={loading} onChange={updateEmail} />
                     <div className="error-message">
                         {!isFirstAttempt && emailError}
                     </div>
                 </div>
                 <div className="input-section">
                     <label>Username</label>
-                    <input value={username} onChange={updateUsername} />
+                    <input value={username} disabled={loading} onChange={updateUsername} />
                     <div className="error-message">
                         {!isFirstAttempt && usernameError}
                     </div>
                 </div>
                 <div className="input-section">
                     <label>Password</label>
-                    <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+                    <input type="password" value={password} disabled={loading} onChange={(e) => setPassword(e.target.value)} />
                     <div className="error-message">
                         {!isFirstAttempt && passwordError}
                     </div>
                 </div>
                 <div className="input-section">
                     <label>Verify Password</label>
-                    <input type="password" value={passwordVerify} onChange={(e) => setPasswordVerify(e.target.value)} />
+                    <input type="password" value={passwordVerify} disabled={loading} onChange={(e) => setPasswordVerify(e.target.value)} />
                     <div className="error-message">
                         {!isFirstAttempt && passwordVerifyError}
                     </div>
                 </div>
-                <NiceButton type="submit" isLoading={loading}>Signup</NiceButton>
+                <NiceButton type="submit" disabled={loading} isLoading={loading}>Signup</NiceButton>
             </form>
             <div className="error-box" hidden={!mutationError.unknown}>
                 {mutationError.message}

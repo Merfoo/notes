@@ -57,9 +57,9 @@ const LOGIN = gql`
 
 function Login() {
     const history = useHistory();
+    const dispatch = useDispatch();
 
     const [login, { loading, error }] = useMutation(LOGIN);
-    const dispatch = useDispatch();
 
     const { register, handleSubmit, errors } = useForm();
 
@@ -88,6 +88,7 @@ function Login() {
                         ref={register({
                             required: "Required"
                         })}
+                        disabled={loading}
                     />
                     <div className="error-message">
                         {errors.email && errors.email.message}
@@ -101,12 +102,13 @@ function Login() {
                         ref={register({
                             required: "Required"
                         })}
+                        disabled={loading}
                     />
                     <div className="error-message">
                         {errors.password && errors.password.message}
                     </div>
                 </div>
-                <NiceButton type="submit" isLoading={loading}>Login</NiceButton>
+                <NiceButton type="submit" disabled={loading} isLoading={loading}>Login</NiceButton>
             </form>
             <div className="invalid-credentials" hidden={!error}>
                 Invalid Credentials
