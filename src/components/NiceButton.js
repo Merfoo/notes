@@ -80,7 +80,7 @@ function NiceButton({ children, isLoading, ...props }) {
         }
     }, [isLoading, showLoader]);
 
-    const fadeOutProps = useSpring({ opacity: showLoader ? 1: 0 });
+    const fadeOutProps = useSpring({ opacity: showLoader ? 1 : 0 });
     const fadeInProps = useSpring({ opacity: showLoader ? 0 : 1 });
 
     return (
