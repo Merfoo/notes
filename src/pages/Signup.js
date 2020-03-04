@@ -115,8 +115,14 @@ function Signup() {
     else if (!validateEmail(email))
         emailError = "Invalid email";
 
+    else if (mutationError.email)
+        emailError = mutationError.message;
+
     if (!username)
         usernameError = "Required";
+
+    else if (mutationError.username)
+        usernameError = mutationError.message;
 
     if (!password)
         passwordError = "Required";
@@ -127,24 +133,25 @@ function Signup() {
     else if (passwordVerify !== password)
         passwordVerifyError = "Passwords do not match";
 
-    if (mutationError.email) {
-        if (emailError)
+    const formError = emailError || usernameError || passwordError || passwordVerifyError;
+
+    const updateEmail = (e) => {
+        const newEmail = e.target.value;
+
+        if (mutationError.email)
             setMutationError({ ...mutationError, email: false });
 
-        else
-            emailError = mutationError.message;
-    }
+        setEmail(newEmail);
+    };
 
-    if (mutationError.username) {
-        if (usernameError)
+    const updateUsername = (e) => {
+        const newUsername = e.target.value;
+
+        if (mutationError.username)
             setMutationError({ ...mutationError, username: false });
 
-        else
-            usernameError = mutationError.message;
+        setUsername(newUsername);
     }
-
-    
-    const formError = emailError || usernameError || passwordError || passwordVerifyError;
 
     const onSubmit = (e) => {
         e.preventDefault();
@@ -175,14 +182,14 @@ function Signup() {
             <form onSubmit={onSubmit}>
                 <div className="input-section">
                     <label>Email</label>
-                    <input value={email} onChange={(e) => setEmail(e.target.value)} />
+                    <input value={email} onChange={updateEmail} />
                     <div className="error-message">
                         {!isFirstAttempt && emailError}
                     </div>
                 </div>
                 <div className="input-section">
                     <label>Username</label>
-                    <input value={username} onChange={(e) => setUsername(e.target.value)} />
+                    <input value={username} onChange={updateUsername} />
                     <div className="error-message">
                         {!isFirstAttempt && usernameError}
                     </div>
