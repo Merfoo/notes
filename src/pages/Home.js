@@ -2,38 +2,58 @@
 
 import { css, jsx } from "@emotion/core";
 
+import gql from "graphql-tag";
+import { useQuery } from "@apollo/react-hooks";
+
 import NotePreview from "../components/NotePreview";
 
 const styles = css`
 `;
 
-const notes = [
+const GET_NOTES = gql`
     {
-        titleId: "asdf",
-        title: "this is a title",
-        username: "merfoo",
-        createdAt: "10/20/30"
-    },
-    {
-        titleId: "mmmm",
-        title: "tadfgsad",
-        username: "merfoo",
-        createdAt: "10/20/02"
-    },
-    {
-        titleId: "hellllooo",
-        title: "a title",
-        username: "george",
-        createdAt: "13/20/21"
-    },
-]
+        notes(orderBy: createdAt_DESC) {
+            notes {
+                titleId
+                title
+                createdAt
+                createdBy {
+                    username
+                }
+            }
+            count
+        }
+    }
+`;
 
 function Home() {
+    const { loading, error, data } = useQuery(GET_NOTES);
+
+    let notes = [];
+
+    if (!loading && !error) {
+        notes = data.notes.notes;
+
+        notes = notes.map(note => ({
+            titleId: note.titleId,
+            title: note.title,
+            createdAt: note.createdAt,
+            username: note.createdBy.username
+        }));
+    }
+
+    if (error)
+        console.log("Error loading notes", error);
 
     return (
         <div css={styles}>
             <h2>Recent Notes</h2>
-            {notes.map(note => <NotePreview key={note.title} {...note} />)}
+            {loading ? (
+                <div>Loading...</div>
+            ) : (
+                notes.map(note => <NotePreview key={note.titleId} {...note} />)
+            )}
+            {error && <div>Error loading notes :(</div>}
         </div>
     );
 }

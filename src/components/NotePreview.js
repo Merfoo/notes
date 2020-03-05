@@ -4,7 +4,7 @@ import { NavLink } from "react-router-dom";
 import { css, jsx } from "@emotion/core";
 
 const styles = css`
-    margin-top: 10px;
+    margin-bottom: 20px;
     padding: 10px;
 
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
@@ -27,6 +27,8 @@ const styles = css`
 `;
 
 function NotePreview({ titleId, title, username, createdAt }) {
+    const date = new Date(createdAt).toLocaleString();
+
     return (
         <div css={styles}>
             <h3>
@@ -34,7 +36,7 @@ function NotePreview({ titleId, title, username, createdAt }) {
             </h3>
             <div className="details">
                 <div>{username}</div>
-                <div>{createdAt}</div>
+                <div>{date}</div>
             </div>
         </div>
     );
