@@ -1,5 +1,7 @@
 /** @jsx jsx */
 
+import { useState } from "react";
+import { useSpring, animated } from "react-spring";
 import { css, jsx } from "@emotion/core";
 
 import gql from "graphql-tag";
@@ -27,6 +29,7 @@ const GET_NOTES = gql`
 `;
 
 function Home() {
+    const [loadingMessage, setLoadingMessage] = useState("Loading");
     const { loading, error, data } = useQuery(GET_NOTES);
 
     let notes = [];
@@ -42,16 +45,26 @@ function Home() {
         }));
     }
 
+    if (loading)
+        setTimeout(() => setLoadingMessage(loadingMessage + " ."), 1000);
+
     if (error)
         console.log("Error loading notes", error);
+
+    const fadeOutProps = useSpring({ opacity: loading ? 1 : 0 });
+    const fadeInProps = useSpring({ opacity: loading ? 0 : 1 });
 
     return (
         <div css={styles}>
             <h2>Recent Notes</h2>
             {loading ? (
-                <div>Loading...</div>
+                <animated.div style={fadeOutProps}>
+                    {loadingMessage}
+                </animated.div>
             ) : (
-                notes.map(note => <NotePreview key={note.titleId} {...note} />)
+                <animated.div style={fadeInProps}>
+                    {notes.map(note => <NotePreview key={note.titleId} {...note} />)}
+                </animated.div>
             )}
             {error && <div>Error loading notes :(</div>}
         </div>
