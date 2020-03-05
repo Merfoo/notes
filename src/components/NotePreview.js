@@ -3,6 +3,8 @@
 import { NavLink } from "react-router-dom";
 import { css, jsx } from "@emotion/core";
 
+import { getTimeAgoString } from "../util";
+
 const styles = css`
     margin-bottom: 20px;
     padding: 10px;
@@ -27,7 +29,7 @@ const styles = css`
 `;
 
 function NotePreview({ titleId, title, username, createdAt }) {
-    const date = new Date(createdAt).toLocaleString();
+    const timeAgo = getTimeAgoString(new Date(createdAt));
 
     return (
         <div css={styles}>
@@ -36,7 +38,7 @@ function NotePreview({ titleId, title, username, createdAt }) {
             </h3>
             <div className="details">
                 <div>{username}</div>
-                <div>{date}</div>
+                <div>{timeAgo}</div>
             </div>
         </div>
     );
