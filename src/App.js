@@ -11,6 +11,7 @@ import store from "./redux/store";
 
 import { loadState } from "./localStorage";
 
+import ScrollToTop from "./components/ScrollToTop";
 import Navbar from "./components/Navbar"; 
 import Footer from "./components/Footer";
 
@@ -59,6 +60,7 @@ function App() {
     return (
         <BrowserRouter>
             <Global styles={globalStyles} />
+            <ScrollToTop />
             <ApolloProvider client={apolloClient}>
                 <Provider store={store}>
                         <Navbar />
