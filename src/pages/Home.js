@@ -29,7 +29,7 @@ const GET_NOTES = gql`
 `;
 
 function Home() {
-    const [loadingMessage, setLoadingMessage] = useState("Loading");
+    const [loadingMessage, setLoadingMessage] = useState("Loading notes");
     const { loading, error, data } = useQuery(GET_NOTES);
 
     let notes = [];

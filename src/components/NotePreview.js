@@ -22,19 +22,21 @@ const styles = css`
     }
 
     .details {
+        color: grey;
+
         display: flex;
         flex-direction: row;
         justify-content: space-between;
     }
 
-    .username {
+    .editable, .username {
         :hover {
             text-decoration: underline;
         }
     }
 `;
 
-function NotePreview({ titleId, title, username, createdAt }) {
+function NotePreview({ titleId, title, username, createdAt, editable = false }) {
     const timeAgo = getTimeAgoString(new Date(createdAt));
 
     return (
@@ -43,7 +45,11 @@ function NotePreview({ titleId, title, username, createdAt }) {
                 <NavLink to={`/notes/${titleId}`}>{title}</NavLink>
             </h3>
             <div className="details">
-                <NavLink to={`/users/${username}`} className="username">{username}</NavLink>
+                {editable ? 
+                    <NavLink to={`/notes/${titleId}/edit`} className="editable">Edit</NavLink>
+                :
+                    <NavLink to={`/users/${username}`} className="username">{username}</NavLink>
+                }
                 <div>{timeAgo}</div>
             </div>
         </div>

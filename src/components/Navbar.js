@@ -4,8 +4,7 @@ import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { css, jsx } from "@emotion/core";
 
-import { useDispatch, useSelector } from "react-redux";
-import { logoutUser } from "../redux/actions"
+import { useSelector } from "react-redux";
 
 import Hamburger from "./Hamburger";
 
@@ -99,14 +98,7 @@ function Navbar() {
         }
     `;
 
-    const dispatch = useDispatch();
-
     const hideDrawer = () => setIsDrawerVisible(false);
-
-    const logout = () => {
-        dispatch(logoutUser());
-        hideDrawer();
-    };
 
     return (
         <nav css={navStyles}>
@@ -119,8 +111,7 @@ function Navbar() {
                     { isLoggedIn ? (
                         <div className="links-section">
                             <NavLink to="/notes/create" activeClassName="active-navlink" onClick={hideDrawer}>Create</NavLink>
-                            <NavLink to={`/users/${username}/notes`} activeClassName="active-navlink" onClick={hideDrawer}>Collection</NavLink>
-                            <NavLink to="/" onClick={logout}>Logout</NavLink>
+                            <NavLink to="/profile" activeClassName="active-navlink" onClick={hideDrawer}>Profile</NavLink>
                         </div>
                     ) : (
                         <div className="links-section">

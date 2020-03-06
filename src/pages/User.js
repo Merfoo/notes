@@ -14,12 +14,11 @@ const styles = css`
 `;
 
 function User() {
-    const { id } = useParams();
+    const { id: username } = useParams();
     
     const GET_USER = gql`
         {
-            getUser(username: "${id}") {
-                username
+            getUser(username: "${username}") {
                 createdAt
                 notes {
                     titleId
@@ -30,21 +29,19 @@ function User() {
         }
     `;
     
-    const [loadingMessage, setLoadingMessage] = useState("Loading");
+    const [loadingMessage, setLoadingMessage] = useState("Loading user");
     const { loading, error, data } = useQuery(GET_USER);
 
-    let getUserData = null;
-    let username = "";
+    let userData = null;
     let createdAt = "";
     let notes = [];
 
     if (!loading && !error) {
-        getUserData = data.getUser;
+        userData = data.getUser;
 
-        if (getUserData) {
-            username = getUserData.username;
-            createdAt = getUserData.createdAt;
-            notes = getUserData.notes;
+        if (userData) {
+            createdAt = userData.createdAt;
+            notes = userData.notes;
 
             notes = notes.map(note => ({
                 titleId: note.titleId,
@@ -66,20 +63,20 @@ function User() {
 
     return (
         <div css={styles}>
+            <h2>{username}</h2>
             {loading &&
                 <animated.div style={fadeOutProps}>
                     {loadingMessage}
                 </animated.div>
             }
-            {getUserData ? (
+            {userData ? (
                 <animated.div style={fadeInProps}>
-                    <h2>{username}</h2>
-                    <p>Joined {new Date(createdAt).toLocaleDateString()}</p>
+                    <p>Joined: {new Date(createdAt).toLocaleDateString()}</p>
                     {notes.map(note => <NotePreview key={note.titleId} {...note} />)}
                 </animated.div>
             ) : (
                 <animated.div style={fadeInProps}>
-                    <h2>User "{id}" not found</h2>
+                    <h2>User "{username}" not found</h2>
                 </animated.div>
             )}
             {error && <div>Error loading user :(</div>}
