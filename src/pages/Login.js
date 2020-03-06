@@ -4,7 +4,7 @@ import { useHistory } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { css, jsx } from "@emotion/core";
 
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../redux/actions";
 
 import gql from "graphql-tag";
@@ -59,6 +59,8 @@ function Login() {
     const history = useHistory();
     const dispatch = useDispatch();
 
+    const username = useSelector(state => state.username);
+
     const [login, { loading, error }] = useMutation(LOGIN);
 
     const { register, handleSubmit, errors } = useForm();
@@ -76,6 +78,9 @@ function Login() {
                 console.log(e);
             });
     };
+
+    if (username)
+        return <div>You are already logged in</div>;
 
     return (
         <div css={styles}>

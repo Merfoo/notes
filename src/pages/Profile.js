@@ -100,6 +100,9 @@ function Profile() {
         history.push("/");
     };
 
+    if (!username)
+        return <div>Please login to view your profile</div>;
+
     return (
         <div css={styles}>
             <div className="header">
