@@ -14,7 +14,7 @@ function Navbar() {
     const username = useSelector(state => state.username);
     const isLoggedIn = !!username;
 
-    const openDrawerHeight = isLoggedIn ? "150px" : "100px";
+    const openDrawerHeight = "100px";
 
     const navStyles = css`
         position: fixed;
