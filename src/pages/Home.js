@@ -14,7 +14,7 @@ const styles = css`
 
 const GET_NOTES = gql`
     {
-        notes(orderBy: createdAt_DESC) {
+        getNotes(orderBy: createdAt_DESC) {
             notes {
                 titleId
                 title
@@ -35,7 +35,7 @@ function Home() {
     let notes = [];
 
     if (!loading && !error) {
-        notes = data.notes.notes;
+        notes = data.getNotes.notes;
 
         notes = notes.map(note => ({
             titleId: note.titleId,
