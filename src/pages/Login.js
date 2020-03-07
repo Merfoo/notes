@@ -4,75 +4,83 @@ import { useHistory } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { css, jsx } from "@emotion/core";
 
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../redux/actions";
 
 import gql from "graphql-tag";
 import { useMutation } from "@apollo/react-hooks";
 
+import NiceButton from "../components/NiceButton";
+
+const styles = css`
+    .input-section {
+        height: 100px;
+
+        display: flex;
+        flex-direction: column;
+
+        label {
+            margin-bottom: 5px;
+        }
+
+        input {
+            height: 30px;
+        }
+
+        .error-message {
+            color: red;
+        }
+    }
+
+    .invalid-credentials {
+        color: white;
+
+        margin-top: 50px;
+        padding: 10px;
+        border-radius: 3px;
+
+        background-color: rgba(255, 0, 0, 0.5);
+    }
+`;
+
+const LOGIN = gql`
+    mutation Login($email: String!, $password: String!) {
+        login(email: $email, password: $password) {
+            token
+            user {
+                email
+                username
+            }
+        }
+    }
+`;
+
 function Login() {
-    const styles = css`
-        .input-section {
-            height: 100px;
-
-            display: flex;
-            flex-direction: column;
-
-            label {
-                margin-bottom: 5px;
-            }
-
-            input {
-                height: 25px;
-            }
-
-            .error-message {
-                color: red;
-            }
-        }
-    `;
-
-    const LOGIN = gql`
-        mutation Login($email: String!, $password: String!) {
-            login(email: $email, password: $password) {
-                token
-                user {
-                    email
-                    username
-                }
-            }
-        }
-    `;
-
     const history = useHistory();
-
-    const [login, { loading }] = useMutation(LOGIN);
     const dispatch = useDispatch();
+
+    const username = useSelector(state => state.username);
+
+    const [login, { loading, error }] = useMutation(LOGIN);
 
     const { register, handleSubmit, errors } = useForm();
 
     const onSubmit = ({ email, password }) => {
-        console.log("on submit");
-        console.log(email, password);
-
         login({ variables: { email, password } })
-            .then((data) => {
-                console.log("data");
-                console.log(data);
-
-                const { token, user } = data.data.login;
+            .then((res) => {
+                const { token, user } = res.data.login;
                 dispatch(loginUser(token, user.username));
 
                 history.push("/");
             })
             .catch((e) => {
-                console.log("rejected");
+                console.log("login rejected");
                 console.log(e);
             });
     };
 
-    console.log("loading");
-    console.log(loading);
+    if (username)
+        return <div>You are already logged in</div>;
 
     return (
         <div css={styles}>
@@ -85,6 +93,7 @@ function Login() {
                         ref={register({
                             required: "Required"
                         })}
+                        disabled={loading}
                     />
                     <div className="error-message">
                         {errors.email && errors.email.message}
@@ -98,13 +107,17 @@ function Login() {
                         ref={register({
                             required: "Required"
                         })}
+                        disabled={loading}
                     />
                     <div className="error-message">
                         {errors.password && errors.password.message}
                     </div>
                 </div>
-                <input type="submit" />
+                <NiceButton type="submit" disabled={loading} isLoading={loading}>Login</NiceButton>
             </form>
+            <div className="invalid-credentials" hidden={!error}>
+                Invalid Credentials
+            </div>
         </div>
     );
 }

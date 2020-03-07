@@ -4,13 +4,17 @@ import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { css, jsx } from "@emotion/core";
 
-import { useDispatch, useSelector } from "react-redux";
-import { logoutUser } from "../redux/actions"
+import { useSelector } from "react-redux";
 
 import Hamburger from "./Hamburger";
 
 function Navbar() {
     const [isDrawerVisible, setIsDrawerVisible] = useState(false);
+
+    const username = useSelector(state => state.username);
+    const isLoggedIn = !!username;
+
+    const openDrawerHeight = "100px";
 
     const navStyles = css`
         position: fixed;
@@ -79,7 +83,7 @@ function Navbar() {
             .drawer {
                 padding-bottom: ${isDrawerVisible ? "5px" : "0"}; // When the drawer is hidden, the padding causes some of it to be shown...
                 transition: height 0.5s;
-                height: ${isDrawerVisible ? "150px" : "0"}; // This value will have to change if the user is logged in since more entries are available...
+                height: ${isDrawerVisible ? openDrawerHeight : "0"}; // This value will have to change if the user is logged in since more entries are available...
                 overflow: hidden;
             }
 
@@ -94,16 +98,7 @@ function Navbar() {
         }
     `;
 
-    const dispatch = useDispatch();
-    const username = useSelector(state => state.username);
-    const isLoggedIn = !!username;
-
     const hideDrawer = () => setIsDrawerVisible(false);
-
-    const logout = () => {
-        dispatch(logoutUser());
-        hideDrawer();
-    };
 
     return (
         <nav css={navStyles}>
@@ -116,8 +111,7 @@ function Navbar() {
                     { isLoggedIn ? (
                         <div className="links-section">
                             <NavLink to="/notes/create" activeClassName="active-navlink" onClick={hideDrawer}>Create</NavLink>
-                            <NavLink to={`/users/${username}/notes`} activeClassName="active-navlink" onClick={hideDrawer}>Collection</NavLink>
-                            <NavLink to="/" onClick={logout}>Logout</NavLink>
+                            <NavLink to="/profile" activeClassName="active-navlink" onClick={hideDrawer}>Profile</NavLink>
                         </div>
                     ) : (
                         <div className="links-section">

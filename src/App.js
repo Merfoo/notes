@@ -9,6 +9,9 @@ import { ApolloProvider } from "@apollo/react-hooks";
 import { Provider } from "react-redux";
 import store from "./redux/store";
 
+import { loadState } from "./localStorage";
+
+import ScrollToTop from "./components/ScrollToTop";
 import Navbar from "./components/Navbar"; 
 import Footer from "./components/Footer";
 
@@ -16,14 +19,16 @@ import Home from "./pages/Home";
 import Signup from "./pages/Signup";
 import Login from "./pages/Login";
 import CreateNote from "./pages/CreateNote";
+import Profile from "./pages/Profile";
+import User from "./pages/User";
 
 function App() {
     const globalStyles = css`
+        @import url('https://fonts.googleapis.com/css?family=Muli&display=swap');
+
         body {
             margin: 0;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-            'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-            sans-serif;
+            font-family: "Muli", sans-serif;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
         }
@@ -40,22 +45,34 @@ function App() {
     `;
 
     const apolloClient = new ApolloClient({
-        //Change to local host when developing
-       //uri: "https://merfoo-notes-backend.herokuapp.com/"
-        uri: "https://localhost:4000/"
+        uri: "https://merfoo-notes-backend.herokuapp.com/",
+        request: (operation) => {
+            const state = loadState();
+
+            if (state && state.userToken) {
+                operation.setContext({
+                    headers: {
+                        authorization: `Bearer ${state.userToken}`
+                    }
+                });
+            }
+        }
     });
 
     return (
         <BrowserRouter>
             <Global styles={globalStyles} />
+            <ScrollToTop />
             <ApolloProvider client={apolloClient}>
                 <Provider store={store}>
                         <Navbar />
                         <main css={mainStyles}>
                             <Switch>
                                 <Route path="/notes/create" component={CreateNote} />
+                                <Route path="/users/:id" component={User} />
                                 <Route path="/signup" component={Signup} />
                                 <Route path="/login" component={Login} />
+                                <Route path="/profile" component={Profile} />
                                 <Route path="/" component={Home} />
                             </Switch>
                         </main>
