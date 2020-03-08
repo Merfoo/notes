@@ -5,6 +5,7 @@ import { NavLink, useParams, useHistory } from "react-router-dom";
 import { useSpring, animated } from "react-spring";
 import { css, jsx } from "@emotion/core";
 import { useForm } from "react-hook-form";
+import { useSelector } from "react-redux";
 
 import { useQuery, useMutation } from '@apollo/react-hooks';
 import gql from "graphql-tag";
@@ -124,6 +125,9 @@ function EditNote() {
             }
         }
     }
+
+    if(note.username !== useSelector(state => state.username))
+        history.push("/");
 
     if (loading)
         setTimeout(() => setLoadingMessage(loadingMessage + " ."), 1000);
