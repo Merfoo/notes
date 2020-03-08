@@ -1,7 +1,6 @@
 /** @jsx jsx */
 
 import { NavLink } from "react-router-dom";
-
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useSpring, animated } from "react-spring";
