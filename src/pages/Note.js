@@ -1,8 +1,7 @@
 /** @jsx jsx */
 
-import { NavLink } from "react-router-dom";
 import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { NavLink, useParams } from "react-router-dom";
 import { useSpring, animated } from "react-spring";
 import { css, jsx } from "@emotion/core";
 import { useSelector } from "react-redux";
@@ -13,7 +12,7 @@ import gql from "graphql-tag";
 import { getTimeAgoString } from "../util";
 
 const styles = css`
-    .noteDiv {
+    .note-container {
         margin-bottom: 20px;
         padding: 10px;
 
@@ -102,7 +101,7 @@ function Note() {
             }
             {noteData ? (
                 <animated.div style={fadeInProps}>
-                    <div className="noteDiv">
+                    <div className="note-container">
                         <h2>{note.title}</h2>
                         <p>{note.body}</p>
                         {editable ? 
