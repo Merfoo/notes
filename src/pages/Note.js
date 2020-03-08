@@ -29,9 +29,7 @@ function Note({match}) {
 
     return (
         <div>
-            <p>Hello World!</p>
-            <h3>ID: {note}</h3>
-            <p>Data: {data}</p>
+            <p>View Single Note Page</p>
         </div>
     );
 }

@@ -1,5 +1,6 @@
 /** @jsx jsx */
 
+import { useHistory } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { css, jsx } from "@emotion/core";
 
@@ -8,7 +9,11 @@ import { useMutation } from "@apollo/react-hooks";
 
 import {generateCombination} from "gfycat-style-urls";
 
+import NiceButton from "../components/NiceButton";
+
 function CreateNote() {
+    const history = useHistory();
+    
     const styles = css`
         .input-section {
             height: 100px;
@@ -33,11 +38,9 @@ function CreateNote() {
     const CREATENOTE = gql`
         mutation CreateNote($title: String!, $titleId: String!, $body: String!) {
             createNote(title: $title, titleId: $titleId, body: $body) {
-                note {
-                    title
-                    titleId
-                    body
-                }
+                title
+                titleId
+                body
             }
         }
     `;
@@ -47,20 +50,16 @@ function CreateNote() {
     const { register, handleSubmit, errors, watch } = useForm();
 
     const onSubmit = ({ title, body }) => {
-        let titleId = title + generateCombination(3, "-");
-        console.log (title + " " + titleId + " " + body);
+        let titleId = title + "-" + (generateCombination(2, "")).toLowerCase();
         createNote({ variables: { title, titleId, body } })
+            .then((res) => {
+                history.push("/notes/" + titleId);
+            })
             .catch((e) => {
-                console.log("rejected");
+                console.log("Note creation failed");
                 console.log(e);
             });
     };
-
-    console.log("Create Note Data");
-    console.log(data);
-
-    console.log("loading");
-    console.log(loading);
 
     return (
         <div css={styles}>
@@ -92,7 +91,7 @@ function CreateNote() {
                     </div>
                 </div>
                 <br/><br/>
-                <input type="submit" />
+                <NiceButton type="submit" disabled={loading} isLoading={loading}>Signup</NiceButton>
             </form>
         </div>
     );
