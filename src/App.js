@@ -18,6 +18,8 @@ import Footer from "./components/Footer";
 import Home from "./pages/Home";
 import Signup from "./pages/Signup";
 import Login from "./pages/Login";
+import CreateNote from "./pages/CreateNote";
+import Note from "./pages/Note";
 import Profile from "./pages/Profile";
 import User from "./pages/User";
 
@@ -67,6 +69,8 @@ function App() {
                         <Navbar />
                         <main css={mainStyles}>
                             <Switch>
+                                <Route path="/notes/create" component={CreateNote} />
+                                <Route path="/notes/:titleId" component={Note} />
                                 <Route path="/users/:id" component={User} />
                                 <Route path="/signup" component={Signup} />
                                 <Route path="/login" component={Login} />
