@@ -4,6 +4,8 @@ import { useHistory } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { css, jsx } from "@emotion/core";
 
+import { useSelector } from "react-redux";
+
 import gql from "graphql-tag";
 import { useMutation } from "@apollo/react-hooks";
 
@@ -35,6 +37,16 @@ const styles = css`
     .input-section-body {
         margin-bottom: 25px;
     }
+
+    .error-container {
+        color: white;
+
+        margin-top: 50px;
+        padding: 10px;
+        border-radius: 3px;
+
+        background-color: rgba(255, 0, 0, 0.5);
+    }
 `;
 
 const CREATE_NOTE = gql`
@@ -46,9 +58,10 @@ const CREATE_NOTE = gql`
 `;
 
 function CreateNote() {
+    const username = useSelector(state => state.username);
     const history = useHistory();
 
-    const [createNote, { loading }] = useMutation(CREATE_NOTE);
+    const [createNote, { loading, error }] = useMutation(CREATE_NOTE);
 
     const { register, handleSubmit, errors } = useForm();
 
@@ -64,6 +77,9 @@ function CreateNote() {
                 console.log(e);
             });
     };
+
+    if (!username)
+        return <div>Please login to create a note</div>;
 
     return (
         <div css={styles}>
@@ -96,6 +112,9 @@ function CreateNote() {
                 </div>
                 <NiceButton type="submit" disabled={loading} isLoading={loading}>Create</NiceButton>
             </form>
+            <div className="error-container" hidden={!error}>
+                Error creating note
+            </div>
         </div>
     );
 }
