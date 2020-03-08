@@ -7,52 +7,56 @@ import { css, jsx } from "@emotion/core";
 import gql from "graphql-tag";
 import { useMutation } from "@apollo/react-hooks";
 
-import {generateCombination} from "gfycat-style-urls";
-
 import NiceButton from "../components/NiceButton";
+
+const styles = css`
+    .input-section {
+        display: flex;
+        flex-direction: column;
+
+        label {
+            margin-bottom: 5px;
+        }
+
+        input {
+            height: 30px;
+        }
+
+        .error-message {
+            height: 25px;
+            color: red;
+        }
+    }
+
+    .input-section-title {
+        height: 100px;
+    }
+
+    .input-section-body {
+        margin-bottom: 25px;
+    }
+`;
+
+const CREATE_NOTE = gql`
+    mutation CreateNote($title: String!, $body: String!) {
+        createNote(title: $title,body: $body) {
+            titleId
+        }
+    }
+`;
 
 function CreateNote() {
     const history = useHistory();
-    
-    const styles = css`
-        .input-section {
-            height: 100px;
 
-            display: flex;
-            flex-direction: column;
+    const [createNote, { loading }] = useMutation(CREATE_NOTE);
 
-            label {
-                margin-bottom: 5px;
-            }
-            
-            input {
-                height: 25px;
-            }
-
-            .error-message {
-                color: red;
-            }
-        }
-    `;
-
-    const CREATENOTE = gql`
-        mutation CreateNote($title: String!, $titleId: String!, $body: String!) {
-            createNote(title: $title, titleId: $titleId, body: $body) {
-                title
-                titleId
-                body
-            }
-        }
-    `;
-
-    const [createNote, { data, loading }] = useMutation(CREATENOTE);
-
-    const { register, handleSubmit, errors, watch } = useForm();
+    const { register, handleSubmit, errors } = useForm();
 
     const onSubmit = ({ title, body }) => {
-        let titleId = title + "-" + (generateCombination(2, "")).toLowerCase();
-        createNote({ variables: { title, titleId, body } })
+        createNote({ variables: { title, body } })
             .then((res) => {
+                const { titleId } = res.data.createNote;
+
                 history.push("/notes/" + titleId);
             })
             .catch((e) => {
@@ -65,7 +69,7 @@ function CreateNote() {
         <div css={styles}>
             <h2>Create Note</h2>
             <form onSubmit={handleSubmit(onSubmit)}>
-                <div className="input-section">
+                <div className="input-section input-section-title">
                     <label>Title</label>
                     <input
                         name="title"
@@ -74,24 +78,23 @@ function CreateNote() {
                         })}
                     />
                     <div className="error-message">
-                        {errors.username && errors.username.message}
+                        {errors.title && errors.title.message}
                     </div>
                 </div>
-                <div className="input-section">
+                <div className="input-section input-section-body">
                     <label>Body</label>
                     <textarea
                         name="body"
-                        rows="40"
                         ref={register({
                             required: "Required"
                         })}
+                        rows="20"
                     />
                     <div className="error-message">
-                        {errors.password && errors.password.message}
+                        {errors.body && errors.body.message}
                     </div>
                 </div>
-                <br/><br/>
-                <NiceButton type="submit" disabled={loading} isLoading={loading}>Signup</NiceButton>
+                <NiceButton type="submit" disabled={loading} isLoading={loading}>Create</NiceButton>
             </form>
         </div>
     );
