@@ -82,6 +82,9 @@ function Profile() {
                 createdAt: note.createdAt,
                 editable: true
             }));
+
+            // Default is ordered in asc creation
+            notes.reverse();
         }
     }
 

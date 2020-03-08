@@ -49,6 +49,9 @@ function User() {
                 createdAt: note.createdAt,
                 username
             }));
+
+            // Default is ordered in asc creation
+            notes.reverse();
         }
     }
 
