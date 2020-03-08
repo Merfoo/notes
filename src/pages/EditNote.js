@@ -12,7 +12,6 @@ import gql from "graphql-tag";
 import { getTimeAgoString } from "../util";
 import NiceButton from "../components/NiceButton";
 
-
 const styles = css`
     .noteDiv {
         margin-bottom: 20px;
@@ -24,10 +23,12 @@ const styles = css`
             box-shadow: 0 3px 9px rgba(0, 0, 0, 0.2);
         }
     }
+
     a {
         text-decoration: none;
         color: black;
     }
+
     .details {
         color: grey;
         float: right;
@@ -35,7 +36,8 @@ const styles = css`
         flex-direction: row;
         justify-content: space-between;
     }
-    .editable, .username {
+
+    .editable {
         float: left;
         :hover {
             text-decoration: underline;
@@ -52,11 +54,6 @@ const styles = css`
 
         input {
             height: 30px;
-        }
-
-        .error-message {
-            height: 25px;
-            color: red;
         }
     }
 
@@ -90,7 +87,6 @@ const EDIT_NOTE = gql`
         }
     }
 `;
-
 
 function EditNote() {
     const { titleId } = useParams();
