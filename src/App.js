@@ -46,8 +46,7 @@ function App() {
     `;
 
     const apolloClient = new ApolloClient({
-        //uri: "https://merfoo-notes-backend.herokuapp.com/",
-        uri: "http://localhost:4000/",
+        uri: "https://merfoo-notes-backend.herokuapp.com/",
         request: (operation) => {
             const state = loadState();
 
