@@ -23,6 +23,8 @@ import EditNote from "./pages/EditNote";
 import Note from "./pages/Note";
 import Profile from "./pages/Profile";
 import User from "./pages/User";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 
 function App() {
     const globalStyles = css`
@@ -77,6 +79,8 @@ function App() {
                                 <Route path="/signup" component={Signup} />
                                 <Route path="/login" component={Login} />
                                 <Route path="/profile" component={Profile} />
+                                <Route path="/account/forgot_password" component={ForgotPassword} />
+                                <Route path="/account/reset_password/:id" component={ResetPassword} />
                                 <Route path="/" component={Home} />
                             </Switch>
                         </main>

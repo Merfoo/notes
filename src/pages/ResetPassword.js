@@ -1,10 +1,10 @@
 /** @jsx jsx */
 
-import { NavLink, useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { css, jsx } from "@emotion/core";
 
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { loginUser } from "../redux/actions";
 
 import gql from "graphql-tag";
@@ -28,19 +28,12 @@ const styles = css`
         }
 
         .error-message {
+            height: 25px;
             color: red;
         }
     }
 
-    .forgot_password {
-        display: block;
-
-        margin-top: 25px;
-
-        color: black;
-    }
-
-    .invalid-credentials {
+    .error-container {
         color: white;
 
         margin-top: 50px;
@@ -51,10 +44,10 @@ const styles = css`
     }
 `;
 
-const LOGIN = gql`
-    mutation Login($email: String!, $password: String!) {
-        login(email: $email, password: $password) {
-            token
+const RESET_PASSWOD = gql`
+    mutation ResetPassword($resetId: String!, $password: String!) {
+        resetPassword(resetId: $resetId, password: $password) {
+            token,
             user {
                 email
                 username
@@ -63,50 +56,33 @@ const LOGIN = gql`
     }
 `;
 
-function Login() {
+function ResetPassword() {
     const history = useHistory();
+    const { id: resetId } = useParams();
     const dispatch = useDispatch();
 
-    const username = useSelector(state => state.username);
+    const [resetPassword, { loading, error }] = useMutation(RESET_PASSWOD);
 
-    const [login, { loading, error }] = useMutation(LOGIN);
+    const { register, handleSubmit, errors, getValues } = useForm();
 
-    const { register, handleSubmit, errors } = useForm();
-
-    const onSubmit = ({ email, password }) => {
-        login({ variables: { email, password } })
+    const onSubmit = ({ password }) => {
+        resetPassword({ variables: { resetId, password } })
             .then((res) => {
-                const { token, user } = res.data.login;
+                const { token, user } = res.data.resetPassword;
                 dispatch(loginUser(token, user.username));
 
                 history.push("/");
             })
             .catch((e) => {
-                console.log("login rejected");
+                console.log("reset password rejected");
                 console.log(e);
             });
     };
 
-    if (username)
-        return <div>You are already logged in</div>;
-
     return (
         <div css={styles}>
-            <h2>Login</h2>
+            <h2>Reset Password</h2>
             <form onSubmit={handleSubmit(onSubmit)}>
-                <div className="input-section">
-                    <label>Email</label>
-                    <input
-                        name="email"
-                        ref={register({
-                            required: "Required"
-                        })}
-                        disabled={loading}
-                    />
-                    <div className="error-message">
-                        {errors.email && errors.email.message}
-                    </div>
-                </div>
                 <div className="input-section">
                     <label>Password</label>
                     <input
@@ -121,14 +97,33 @@ function Login() {
                         {errors.password && errors.password.message}
                     </div>
                 </div>
-                <NiceButton type="submit" disabled={loading} isLoading={loading}>Login</NiceButton>
-                <NavLink to="/account/forgot_password" className="forgot_password">Forgot Password?</NavLink>
+                <div className="input-section">
+                    <label>Verify Password</label>
+                    <input
+                        name="verifyPassword"
+                        type="password"
+                        ref={register({
+                            required: "Required",
+                            validate: (value) => {
+                                if (value === getValues()["password"])
+                                    return true;
+
+                                return "The passwords do not match";
+                            }
+                        })}
+                        disabled={loading}
+                    />
+                    <div className="error-message">
+                        {errors.verifyPassword && errors.verifyPassword.message}
+                    </div>
+                </div>
+                <NiceButton type="submit" disabled={loading} isLoading={loading}>Reset</NiceButton>
             </form>
-            <div className="invalid-credentials" hidden={!error}>
-                Invalid Credentials
+            <div className="error-container" hidden={!error}>
+                Error resetting password
             </div>
         </div>
     );
 }
 
-export default Login;
+export default ResetPassword;
