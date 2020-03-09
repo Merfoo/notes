@@ -31,14 +31,14 @@ const styles = css`
 
     .details {
         color: grey;
-        float: right;
         display: flex;
+        flex: start;
         flex-direction: row;
         justify-content: space-between;
+        margin-bottom: 2em;
     }
 
     .editable, .username {
-        float: left;
         :hover {
             text-decoration: underline;
         }
@@ -60,7 +60,7 @@ const GET_NOTE = gql`
 
 function Note() {
     const { titleId } = useParams();
-    const [ loadingMessage, setLoadingMessage ] = useState("Loading user");
+    const [ loadingMessage, setLoadingMessage ] = useState("Loading note");
     const { data, loading, error } = useQuery(GET_NOTE, { variables: { titleId } } );
 
     let noteData = null;
@@ -104,15 +104,14 @@ function Note() {
                     <div className="note-container">
                         <h2>{note.title}</h2>
                         <p>{note.body}</p>
-                        {editable ? 
-                            <NavLink to={`/notes/${titleId}/edit`} className="editable">Edit</NavLink>
-                        :
-                            <NavLink to={`/users/${note.username}`} className="username">{note.username}</NavLink>
-                        }
                         <div className="details">
+                            {editable ? 
+                                <NavLink to={`/notes/${titleId}/edit`} className="editable">Edit</NavLink>
+                            :
+                                <NavLink to={`/users/${note.username}`} className="username">{note.username}</NavLink>
+                            }
                             {timeAgo}
                         </div>
-                        <br/><br/>
                     </div>
                 </animated.div>
             ) : (
