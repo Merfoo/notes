@@ -1,5 +1,6 @@
 /** @jsx jsx */
 
+import { useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { css, jsx } from "@emotion/core";
@@ -57,23 +58,35 @@ const RESET_PASSWOD = gql`
 `;
 
 function ResetPassword() {
+    const [errorMessage, setErrorMessage] = useState("");
     const history = useHistory();
     const { id: resetId } = useParams();
     const dispatch = useDispatch();
 
-    const [resetPassword, { loading, error }] = useMutation(RESET_PASSWOD);
+    const [resetPassword, { loading }] = useMutation(RESET_PASSWOD);
 
     const { register, handleSubmit, errors, getValues } = useForm();
 
     const onSubmit = ({ password }) => {
+        setErrorMessage("");
+
         resetPassword({ variables: { resetId, password } })
             .then((res) => {
-                const { token, user } = res.data.resetPassword;
-                dispatch(loginUser(token, user.username));
+                const resetPasswordData = res.data.resetPassword;
 
-                history.push("/");
+                if (resetPasswordData) {
+                    const { token, user } = res.data.resetPassword;
+                    dispatch(loginUser(token, user.username));
+
+                    history.push("/");
+                }
+
+                else
+                    setErrorMessage("Invalid reset password link");
             })
             .catch((e) => {
+                setErrorMessage("Error resetting password");
+
                 console.log("reset password rejected");
                 console.log(e);
             });
@@ -119,8 +132,8 @@ function ResetPassword() {
                 </div>
                 <NiceButton type="submit" disabled={loading} isLoading={loading}>Reset</NiceButton>
             </form>
-            <div className="error-container" hidden={!error}>
-                Error resetting password
+            <div className="error-container" hidden={!errorMessage}>
+                {errorMessage}
             </div>
         </div>
     );
