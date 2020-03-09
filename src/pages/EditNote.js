@@ -1,7 +1,7 @@
 /** @jsx jsx */
 
 import { useState } from "react";
-import { NavLink, useParams, useHistory } from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom";
 import { useSpring, animated } from "react-spring";
 import { css, jsx } from "@emotion/core";
 import { useForm } from "react-hook-form";
@@ -14,7 +14,7 @@ import { getTimeAgoString } from "../util";
 import NiceButton from "../components/NiceButton";
 
 const styles = css`
-    .noteDiv {
+    .note-container {
         margin-bottom: 20px;
         padding: 10px;
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
@@ -32,17 +32,11 @@ const styles = css`
 
     .details {
         color: grey;
-        float: right;
         display: flex;
+        flex: start;
         flex-direction: row;
         justify-content: space-between;
-    }
-
-    .editable {
-        float: left;
-        :hover {
-            text-decoration: underline;
-        }
+        margin-bottom: 2em;
     }
 
     .input-section {
@@ -96,7 +90,7 @@ function EditNote() {
     const { data, loading, error } = useQuery(GET_NOTE,{ variables: { titleId } });
 
     const { register, handleSubmit, errors } = useForm();
-    const [editNote, { editLoading, editError }] = useMutation(EDIT_NOTE);
+    const [editNote, { loading: editLoading, error: editError } ] = useMutation(EDIT_NOTE);
 
     const onSubmit = ({ body }) => {
         editNote({ variables: { titleId, body } })
@@ -110,6 +104,7 @@ function EditNote() {
             });
     };
 
+    const username = useSelector(state => state.username);
     let noteData = null;
     let note = {};
 
@@ -124,10 +119,11 @@ function EditNote() {
                 username: noteData.createdBy.username
             }
         }
-    }
 
-    if(note.username !== useSelector(state => state.username))
-        history.push("/");
+        if(note.username !== username){
+            history.push("/");
+        }
+    }
 
     if (loading)
         setTimeout(() => setLoadingMessage(loadingMessage + " ."), 1000);
@@ -149,7 +145,7 @@ function EditNote() {
             }
             {noteData ? (
                 <animated.div style={fadeInProps}>
-                    <div className="noteDiv">
+                    <div className="note-container">
                         <form onSubmit={handleSubmit(onSubmit, titleId)}>
                             <h2 name="title">{note.title}</h2>
                             <div className="input-section input-section-body">
@@ -160,14 +156,14 @@ function EditNote() {
                                     })}
                                     rows="20"
                                     defaultValue={note.body}
+                                    disabled={editLoading}
                                 />
                             </div>
-                            <NiceButton type="submit" disabled={loading} isLoading={loading}>Save</NiceButton>
-                        </form>
                         <div className="details">
+                            <NiceButton type="submit" disabled={loading} isLoading={loading}>Save</NiceButton>
                             {timeAgo}
                         </div>
-                        <br/><br/>
+                        </form>
                     </div>
                 </animated.div>
             ) : (
@@ -176,6 +172,7 @@ function EditNote() {
                 </animated.div>
             )}
             {error && <div>Error loading note :(</div>}
+            {editError && <div>Error saving note :(</div>}
         </div>
     );
 }
