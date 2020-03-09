@@ -12,30 +12,32 @@ import gql from "graphql-tag";
 import { getTimeAgoString } from "../util";
 
 const styles = css`
-    .note-container {
-        margin-bottom: 20px;
-        padding: 10px;
-
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
-        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-        
-        :hover {
-            box-shadow: 0 3px 9px rgba(0, 0, 0, 0.2);
-        }
-    }
-
     a {
         text-decoration: none;
         color: black;
     }
 
-    .details {
+    .note-container {
+        margin-bottom: 20px;
+        padding: 10px;
+    }
+
+    .note-title {
+        margin-bottom: 10px;
+    }
+
+    .note-details {
+        margin-bottom: 25px;
+
         color: grey;
+
         display: flex;
-        flex: start;
         flex-direction: row;
         justify-content: space-between;
-        margin-bottom: 2em;
+
+        p {
+            margin-top: 0;
+        }
     }
 
     .editable, .username {
@@ -102,16 +104,16 @@ function Note() {
             {noteData ? (
                 <animated.div style={fadeInProps}>
                     <div className="note-container">
-                        <h2>{note.title}</h2>
-                        <p>{note.body}</p>
-                        <div className="details">
+                        <h2 className="note-title">{note.title}</h2>
+                        <div className="note-details">
                             {editable ? 
-                                <NavLink to={`/notes/${titleId}/edit`} className="editable">Edit</NavLink>
+                                <p><NavLink to={`/notes/${titleId}/edit`} className="editable">Edit</NavLink></p>
                             :
-                                <NavLink to={`/users/${note.username}`} className="username">{note.username}</NavLink>
+                                <p>Creator <NavLink to={`/users/${note.username}`} className="username">{note.username}</NavLink></p>
                             }
-                            {timeAgo}
+                            <p>{timeAgo}</p>
                         </div>
+                        <div>{note.body}</div>
                     </div>
                 </animated.div>
             ) : (

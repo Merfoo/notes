@@ -21,12 +21,20 @@ const styles = css`
         color: black;
     }
 
+    .title {
+        margin-bottom: 10px;
+    }
+
     .details {
         color: grey;
 
         display: flex;
         flex-direction: row;
         justify-content: space-between;
+
+        p {
+            margin-top: 0;
+        }
     }
 
     .editable, .username {
@@ -41,16 +49,16 @@ function NotePreview({ titleId, title, username, createdAt, editable = false }) 
 
     return (
         <div css={styles}>
-            <h3>
+            <h3 className="title">
                 <NavLink to={`/notes/${titleId}`}>{title}</NavLink>
             </h3>
             <div className="details">
                 {editable ? 
                     <NavLink to={`/notes/${titleId}/edit`} className="editable">Edit</NavLink>
                 :
-                    <NavLink to={`/users/${username}`} className="username">{username}</NavLink>
+                    <p>Creator <NavLink to={`/users/${username}`} className="username">{username}</NavLink></p>
                 }
-                <div>{timeAgo}</div>
+                <p>{timeAgo}</p>
             </div>
         </div>
     );
