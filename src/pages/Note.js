@@ -50,6 +50,10 @@ const styles = css`
             text-decoration: underline;
         }
     }
+
+    .note-body {
+        white-space: pre-wrap;
+    }
 `;
 
 const GET_NOTE = gql`
@@ -123,7 +127,7 @@ function Note() {
                             }
                             <p>{timeAgo}</p>
                         </div>
-                        <div>{note.body}</div>
+                        <div className="note-body">{note.body}</div>
                     </div>
                 </animated.div>
             ) : (
