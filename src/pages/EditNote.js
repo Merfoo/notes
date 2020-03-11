@@ -14,6 +14,10 @@ import { getTimeAgoString } from "../util";
 import NiceButton from "../components/NiceButton";
 
 const styles = css`
+    .last-posted {
+        color: grey;
+    }
+
     .input-section {
         display: flex;
         flex-direction: column;
@@ -36,7 +40,7 @@ const styles = css`
         }
     }
 
-    .submit-container {
+    .buttons-container {
         margin-top: 30px;
 
         display: flex;
@@ -44,8 +48,8 @@ const styles = css`
         justify-content: space-between;
     }
 
-    .last-posted {
-        color: grey;
+    .delete-button {
+        background-color: rgba(255, 0, 0, 0.5);
     }
 
     .error-container {
@@ -81,19 +85,26 @@ const EDIT_NOTE = gql`
     }
 `;
 
+const DELETE_NOTE = gql`
+    mutation DeleteNote($titleId: String!) {
+        deleteNote(titleId: $titleId)
+    }
+`;
+
 function EditNote() {
     const { titleId } = useParams();
     const history = useHistory();
     const [ loadingMessage, setLoadingMessage ] = useState("Loading note");
+
     const { data, loading, error } = useQuery(GET_NOTE,{ variables: { titleId } });
+    const [editNote, { loading: editLoading, error: editError } ] = useMutation(EDIT_NOTE);
+    const [deleteNote, { loading: deleteLoading, error: deleteError }] = useMutation(DELETE_NOTE);
 
     const { register, handleSubmit, errors } = useForm();
-    const [editNote, { loading: editLoading, error: editError } ] = useMutation(EDIT_NOTE);
 
     const onSubmit = ({ body, isPrivate }) => {
         editNote({ variables: { titleId, body, isPrivate } })
             .then((res) => {
-                console.log("Success! Note has been edited.");
                 history.push("/notes/" + titleId);
             })
             .catch((e) => {
@@ -101,6 +112,19 @@ function EditNote() {
                 console.log(e);
             });
     };
+
+    const deleteOnClick = () => {
+        if (window.confirm("Delete note?")) {
+            deleteNote({ variables: { titleId } })
+                .then((res) => {
+                    history.push("/");
+                })
+                .catch((e) => {
+                    console.log("Note deleting failed");
+                    console.log(e);
+                });
+        }
+    }
 
     const username = useSelector(state => state.username);
     let noteData = null;
@@ -145,8 +169,11 @@ function EditNote() {
             {noteData ? (
                 <animated.div style={fadeInProps}>
                     <div>
-                        <form onSubmit={handleSubmit(onSubmit, titleId)}>
+                        <div>
                             <h2 name="title">{note.title}</h2>
+                            <p className="last-posted">{timeAgo}</p>
+                        </div>
+                        <form onSubmit={handleSubmit(onSubmit, titleId)}>
                             <div className="input-section">
                                 <textarea
                                     name="body"
@@ -155,7 +182,7 @@ function EditNote() {
                                     })}
                                     rows="20"
                                     defaultValue={note.body}
-                                    disabled={editLoading}
+                                    disabled={editLoading || deleteLoading}
                                 />
                                 <div className="error-message">
                                     {errors.body && errors.body.message}
@@ -168,14 +195,14 @@ function EditNote() {
                                         type="checkbox"
                                         ref={register()}
                                         defaultChecked={note.isPrivate}
-                                        disabled={editLoading}
+                                        disabled={editLoading || deleteLoading}
                                     />
                                     Private
                                 </label>
                             </div>
-                            <div className="submit-container">
-                                <NiceButton type="submit" disabled={editLoading} isLoading={editLoading}>Save</NiceButton>
-                                <p className="last-posted">{timeAgo}</p>
+                            <div className="buttons-container">
+                                <NiceButton type="submit" disabled={editLoading || deleteLoading} isLoading={editLoading}>Save</NiceButton>
+                                <NiceButton type="button" disabled={editLoading || deleteLoading} isLoading={deleteLoading} className="delete-button" onClick={deleteOnClick}>Delete</NiceButton>
                             </div>
                         </form>
                     </div>
@@ -185,9 +212,10 @@ function EditNote() {
                     <h2>Note not found</h2>
                 </animated.div>
             )}
-            <div className="error-container" hidden={!(error || editError)}>
+            <div className="error-container" hidden={!(error || editError || deleteError)}>
                 {error && <div>Error loading note</div>}
                 {editError && <div>Error saving note</div>}
+                {deleteError && <div>Error deleting note</div>}
             </div>
         </div>
     );
