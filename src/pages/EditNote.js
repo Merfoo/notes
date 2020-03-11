@@ -80,7 +80,9 @@ const GET_NOTE = gql`
 const EDIT_NOTE = gql`
     mutation EditNote($titleId: String!, $body: String!, $isPrivate: Boolean!) {
         updateNote(titleId: $titleId, body: $body, isPrivate: $isPrivate) {
-            titleId
+            id
+            body
+            isPrivate
         }
     }
 `;

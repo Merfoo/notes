@@ -59,6 +59,7 @@ const styles = css`
 const GET_NOTE = gql`
     query GetNote($titleId: String!) {
         getNote(titleId: $titleId) {
+            id
             title
             body
             isPrivate
