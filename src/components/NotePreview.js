@@ -21,10 +21,20 @@ const styles = css`
         color: black;
     }
 
+    .header {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+
     .title {
         margin-bottom: 10px;
     }
 
+    .is-private {
+        color: grey;
+    }
+    
     .details {
         color: grey;
 
@@ -44,14 +54,17 @@ const styles = css`
     }
 `;
 
-function NotePreview({ titleId, title, username, createdAt, editable = false }) {
+function NotePreview({ titleId, title, username, createdAt, isPrivate, showIsPrivate, editable }) {
     const timeAgo = getTimeAgoString(new Date(createdAt));
 
     return (
         <div css={styles}>
-            <h3 className="title">
-                <NavLink to={`/notes/${titleId}`}>{title}</NavLink>
-            </h3>
+            <div className="header">
+                <h3 className="title">
+                    <NavLink to={`/notes/${titleId}`}>{title}</NavLink>
+                </h3>
+                <p className="is-private" hidden={!showIsPrivate}>{isPrivate ? "Private" : "Public"}</p>
+            </div>
             <div className="details">
                 {editable ? 
                     <NavLink to={`/notes/${titleId}/edit`} className="editable">Edit</NavLink>

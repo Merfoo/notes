@@ -17,16 +17,21 @@ const styles = css`
         color: black;
     }
 
-    .note-container {
-        margin-bottom: 20px;
-        padding: 10px;
+    .header {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
     }
 
-    .note-title {
+    .title {
         margin-bottom: 10px;
     }
 
-    .note-details {
+    .is-private {
+        color: grey;
+    }
+
+    .details {
         margin-bottom: 25px;
 
         color: grey;
@@ -52,6 +57,7 @@ const GET_NOTE = gql`
         getNote(titleId: $titleId) {
             title
             body
+            isPrivate
             createdAt
             createdBy {
                 username
@@ -76,7 +82,8 @@ function Note() {
                 title: noteData.title,
                 body: noteData.body,
                 createdAt: noteData.createdAt,
-                username: noteData.createdBy.username
+                username: noteData.createdBy.username,
+                isPrivate: noteData.isPrivate
             }
         }
     }
@@ -85,14 +92,14 @@ function Note() {
         setTimeout(() => setLoadingMessage(loadingMessage + " ."), 1000);
 
     if (error)
-        console.log("Error loading user", error);
+        console.log("Error loading note", error);
 
     const fadeOutProps = useSpring({ opacity: loading ? 1 : 0 });
     const fadeInProps = useSpring({ opacity: loading ? 0 : 1 });
 
     const timeAgo = getTimeAgoString(new Date(note.createdAt));
 
-    const editable = (useSelector(state => state.username) === note.username);
+    const isOwner = (useSelector(state => state.username) === note.username);
 
     return (
         <div css={styles}>
@@ -103,10 +110,13 @@ function Note() {
             }
             {noteData ? (
                 <animated.div style={fadeInProps}>
-                    <div className="note-container">
-                        <h2 className="note-title">{note.title}</h2>
-                        <div className="note-details">
-                            {editable ? 
+                    <div>
+                        <div className="header">
+                            <h2 className="title">{note.title}</h2>
+                            <p className="is-private" hidden={!isOwner}>{note.isPrivate ? "Private" : "Public" }</p>
+                        </div>
+                        <div className="details">
+                            {isOwner ? 
                                 <p><NavLink to={`/notes/${titleId}/edit`} className="editable">Edit</NavLink></p>
                             :
                                 <p>Creator <NavLink to={`/users/${note.username}`} className="username">{note.username}</NavLink></p>

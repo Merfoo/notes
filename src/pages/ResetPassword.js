@@ -50,7 +50,6 @@ const RESET_PASSWOD = gql`
         resetPassword(resetId: $resetId, password: $password) {
             token,
             user {
-                email
                 username
             }
         }

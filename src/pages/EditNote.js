@@ -14,52 +14,49 @@ import { getTimeAgoString } from "../util";
 import NiceButton from "../components/NiceButton";
 
 const styles = css`
-    .note-container {
-        margin-bottom: 20px;
-        padding: 10px;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
-        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-        
-        :hover {
-            box-shadow: 0 3px 9px rgba(0, 0, 0, 0.2);
-        }
-    }
-
-    a {
-        text-decoration: none;
-        color: black;
-    }
-
-    .details {
-        color: grey;
-        display: flex;
-        flex: start;
-        flex-direction: row;
-        justify-content: space-between;
-        margin-bottom: 2em;
-    }
-
     .input-section {
         display: flex;
         flex-direction: column;
 
+        .error-message {
+            height: 25px;
+            color: red;
+        }
+    }
+
+    .input-section-is-private {
         label {
-            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
         }
 
         input {
             height: 30px;
+            margin-left: 0;
         }
     }
 
-    .input-section-title {
-        height: 100px;
+    .submit-container {
+        margin-top: 30px;
+
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
     }
 
-    .input-section-body {
-        margin-bottom: 25px;
+    .last-posted {
+        color: grey;
     }
 
+    .error-container {
+        color: white;
+
+        margin-top: 50px;
+        padding: 10px;
+        border-radius: 3px;
+
+        background-color: rgba(255, 0, 0, 0.5);
+    }
 `;
 
 const GET_NOTE = gql`
@@ -68,6 +65,7 @@ const GET_NOTE = gql`
             title
             body
             createdAt
+            isPrivate
             createdBy {
                 username
             }
@@ -76,8 +74,8 @@ const GET_NOTE = gql`
 `;
 
 const EDIT_NOTE = gql`
-    mutation EditNote($titleId: String!, $body: String!) {
-        updateNote(titleId: $titleId, body: $body) {
+    mutation EditNote($titleId: String!, $body: String!, $isPrivate: Boolean!) {
+        updateNote(titleId: $titleId, body: $body, isPrivate: $isPrivate) {
             titleId
         }
     }
@@ -92,8 +90,8 @@ function EditNote() {
     const { register, handleSubmit, errors } = useForm();
     const [editNote, { loading: editLoading, error: editError } ] = useMutation(EDIT_NOTE);
 
-    const onSubmit = ({ body }) => {
-        editNote({ variables: { titleId, body } })
+    const onSubmit = ({ body, isPrivate }) => {
+        editNote({ variables: { titleId, body, isPrivate } })
             .then((res) => {
                 console.log("Success! Note has been edited.");
                 history.push("/notes/" + titleId);
@@ -116,6 +114,7 @@ function EditNote() {
                 title: noteData.title,
                 body: noteData.body,
                 createdAt: noteData.createdAt,
+                isPrivate: noteData.isPrivate,
                 username: noteData.createdBy.username
             }
         }
@@ -129,7 +128,7 @@ function EditNote() {
         setTimeout(() => setLoadingMessage(loadingMessage + " ."), 1000);
 
     if (error)
-        console.log("Error loading user", error);
+        console.log("Error loading note", error);
 
     const fadeOutProps = useSpring({ opacity: loading ? 1 : 0 });
     const fadeInProps = useSpring({ opacity: loading ? 0 : 1 });
@@ -145,10 +144,10 @@ function EditNote() {
             }
             {noteData ? (
                 <animated.div style={fadeInProps}>
-                    <div className="note-container">
+                    <div>
                         <form onSubmit={handleSubmit(onSubmit, titleId)}>
                             <h2 name="title">{note.title}</h2>
-                            <div className="input-section input-section-body">
+                            <div className="input-section">
                                 <textarea
                                     name="body"
                                     ref={register({
@@ -158,11 +157,26 @@ function EditNote() {
                                     defaultValue={note.body}
                                     disabled={editLoading}
                                 />
+                                <div className="error-message">
+                                    {errors.body && errors.body.message}
+                                </div>
                             </div>
-                        <div className="details">
-                            <NiceButton type="submit" disabled={loading} isLoading={loading}>Save</NiceButton>
-                            {timeAgo}
-                        </div>
+                            <div className="input-section input-section-is-private">
+                                <label>
+                                    <input
+                                        name="isPrivate"
+                                        type="checkbox"
+                                        ref={register()}
+                                        defaultChecked={note.isPrivate}
+                                        disabled={editLoading}
+                                    />
+                                    Private
+                                </label>
+                            </div>
+                            <div className="submit-container">
+                                <NiceButton type="submit" disabled={editLoading} isLoading={editLoading}>Save</NiceButton>
+                                <p className="last-posted">{timeAgo}</p>
+                            </div>
                         </form>
                     </div>
                 </animated.div>
@@ -171,8 +185,10 @@ function EditNote() {
                     <h2>Note not found</h2>
                 </animated.div>
             )}
-            {error && <div>Error loading note :(</div>}
-            {editError && <div>Error saving note :(</div>}
+            <div className="error-container" hidden={!(error || editError)}>
+                {error && <div>Error loading note</div>}
+                {editError && <div>Error saving note</div>}
+            </div>
         </div>
     );
 }

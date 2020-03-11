@@ -5,6 +5,8 @@ import { css, jsx } from "@emotion/core";
 function footer() {
     const footerStyles = css`
         width: 100%;
+        margin-top: 50px;
+
         box-shadow: 0 -1px 1px rgba(0, 0, 0, 0.2);
 
         .content {

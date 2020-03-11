@@ -12,9 +12,9 @@ import NotePreview from "../components/NotePreview";
 const styles = css`
 `;
 
-const GET_NOTES = gql`
+const GET_PUBLIC_NOTES = gql`
     {
-        getNotes(orderBy: createdAt_DESC) {
+        getPublicNotes(orderBy: createdAt_DESC) {
             notes {
                 titleId
                 title
@@ -30,12 +30,12 @@ const GET_NOTES = gql`
 
 function Home() {
     const [loadingMessage, setLoadingMessage] = useState("Loading notes");
-    const { loading, error, data } = useQuery(GET_NOTES);
+    const { loading, error, data } = useQuery(GET_PUBLIC_NOTES);
 
     let notes = [];
 
     if (!loading && !error) {
-        notes = data.getNotes.notes;
+        notes = data.getPublicNotes.notes;
 
         notes = notes.map(note => ({
             titleId: note.titleId,

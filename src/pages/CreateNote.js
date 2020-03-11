@@ -34,8 +34,19 @@ const styles = css`
         height: 100px;
     }
 
-    .input-section-body {
-        margin-bottom: 25px;
+    .input-section-is-private {
+        label {
+            display: flex;
+            align-items: center;
+        }
+
+        input {
+            margin-left: 0;
+        }
+    }
+
+    .submit-button {
+        margin-top: 30px;
     }
 
     .error-container {
@@ -50,8 +61,8 @@ const styles = css`
 `;
 
 const CREATE_NOTE = gql`
-    mutation CreateNote($title: String!, $body: String!) {
-        createNote(title: $title,body: $body) {
+    mutation CreateNote($title: String!, $body: String!, $isPrivate: Boolean!) {
+        createNote(title: $title, body: $body, isPrivate: $isPrivate) {
             titleId
         }
     }
@@ -65,8 +76,8 @@ function CreateNote() {
 
     const { register, handleSubmit, errors } = useForm();
 
-    const onSubmit = ({ title, body }) => {
-        createNote({ variables: { title, body } })
+    const onSubmit = ({ title, body, isPrivate }) => {
+        createNote({ variables: { title, body, isPrivate } })
             .then((res) => {
                 const { titleId } = res.data.createNote;
 
@@ -92,12 +103,13 @@ function CreateNote() {
                         ref={register({
                             required: "Required"
                         })}
+                        disabled={loading}
                     />
                     <div className="error-message">
                         {errors.title && errors.title.message}
                     </div>
                 </div>
-                <div className="input-section input-section-body">
+                <div className="input-section">
                     <label>Body</label>
                     <textarea
                         name="body"
@@ -105,12 +117,24 @@ function CreateNote() {
                             required: "Required"
                         })}
                         rows="20"
+                        disabled={loading}
                     />
                     <div className="error-message">
                         {errors.body && errors.body.message}
                     </div>
                 </div>
-                <NiceButton type="submit" disabled={loading} isLoading={loading}>Create</NiceButton>
+                <div className="input-section input-section-is-private">
+                    <label>
+                        <input
+                            name="isPrivate"
+                            type="checkbox"
+                            ref={register()}
+                            disabled={loading}
+                        />
+                        Private
+                    </label>
+                </div>
+                <NiceButton className="submit-button" type="submit" disabled={loading} isLoading={loading}>Create</NiceButton>
             </form>
             <div className="error-container" hidden={!error}>
                 Error creating note

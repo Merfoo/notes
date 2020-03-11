@@ -69,22 +69,22 @@ function App() {
             <ScrollToTop />
             <ApolloProvider client={apolloClient}>
                 <Provider store={store}>
-                        <Navbar />
-                        <main css={mainStyles}>
-                            <Switch>
-                                <Route path="/notes/create" component={CreateNote} />
-                                <Route path="/notes/:titleId/edit" component={EditNote} />
-                                <Route path="/notes/:titleId" component={Note} />
-                                <Route path="/users/:id" component={User} />
-                                <Route path="/signup" component={Signup} />
-                                <Route path="/login" component={Login} />
-                                <Route path="/profile" component={Profile} />
-                                <Route path="/account/forgot_password" component={ForgotPassword} />
-                                <Route path="/account/reset_password/:id" component={ResetPassword} />
-                                <Route path="/" component={Home} />
-                            </Switch>
-                        </main>
-                        <Footer />
+                    <Navbar />
+                    <main css={mainStyles}>
+                        <Switch>
+                            <Route path="/notes/create" component={CreateNote} />
+                            <Route path="/notes/:titleId/edit" component={EditNote} />
+                            <Route path="/notes/:titleId" component={Note} />
+                            <Route path="/users/:id" component={User} />
+                            <Route path="/signup" component={Signup} />
+                            <Route path="/login" component={Login} />
+                            <Route path="/profile" component={Profile} />
+                            <Route path="/account/forgot_password" component={ForgotPassword} />
+                            <Route path="/account/reset_password/:id" component={ResetPassword} />
+                            <Route path="/" component={Home} />
+                        </Switch>
+                    </main>
+                    <Footer />
                 </Provider>
             </ApolloProvider>
         </BrowserRouter>

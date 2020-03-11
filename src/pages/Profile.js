@@ -55,6 +55,7 @@ function Profile() {
                     titleId
                     title
                     createdAt
+                    isPrivate
                 }
             }
         }
@@ -80,7 +81,7 @@ function Profile() {
                 titleId: note.titleId,
                 title: note.title,
                 createdAt: note.createdAt,
-                editable: true
+                isPrivate: note.isPrivate
             }));
 
             // Default is ordered in asc creation
@@ -123,7 +124,7 @@ function Profile() {
                     <div>Joined: {new Date(createdAt).toLocaleDateString()}</div>
 
                     <div className="notes">
-                        {notes.map(note => <NotePreview key={note.titleId} {...note} />)}
+                        {notes.map(note => <NotePreview key={note.titleId} {...note} showIsPrivate={true} editable={true} />)}
                     </div>
                 </animated.div>
             ) : (
