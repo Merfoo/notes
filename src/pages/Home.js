@@ -30,7 +30,7 @@ const GET_PUBLIC_NOTES = gql`
 
 function Home() {
     const [loadingMessage, setLoadingMessage] = useState("Loading notes");
-    const { loading, error, data } = useQuery(GET_PUBLIC_NOTES);
+    const { loading, error, data } = useQuery(GET_PUBLIC_NOTES, { fetchPolicy: "no-cache" });
 
     let notes = [];
 

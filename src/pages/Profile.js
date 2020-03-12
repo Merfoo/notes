@@ -62,7 +62,7 @@ function Profile() {
     `;
 
     const [loadingMessage, setLoadingMessage] = useState("Loading profile");
-    const { loading, error, data } = useQuery(GET_USER);
+    const { loading, error, data } = useQuery(GET_USER, { fetchPolicy: "no-cache" });
 
     let userData = null;
     let email = "";

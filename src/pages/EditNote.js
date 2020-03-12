@@ -89,7 +89,9 @@ const EDIT_NOTE = gql`
 
 const DELETE_NOTE = gql`
     mutation DeleteNote($titleId: String!) {
-        deleteNote(titleId: $titleId)
+        deleteNote(titleId: $titleId) {
+            titleId
+        }
     }
 `;
 
@@ -98,7 +100,11 @@ function EditNote() {
     const history = useHistory();
     const [ loadingMessage, setLoadingMessage ] = useState("Loading note");
 
-    const { data, loading, error } = useQuery(GET_NOTE,{ variables: { titleId } });
+    const { data, loading, error } = useQuery(GET_NOTE, {
+        variables: { titleId },
+        fetchPolicy: "no-cache"
+    });
+
     const [editNote, { loading: editLoading, error: editError } ] = useMutation(EDIT_NOTE);
     const [deleteNote, { loading: deleteLoading, error: deleteError }] = useMutation(DELETE_NOTE);
 

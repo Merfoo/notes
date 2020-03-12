@@ -74,7 +74,10 @@ const GET_NOTE = gql`
 function Note() {
     const { titleId } = useParams();
     const [ loadingMessage, setLoadingMessage ] = useState("Loading note");
-    const { data, loading, error } = useQuery(GET_NOTE, { variables: { titleId } } );
+    const { data, loading, error } = useQuery(GET_NOTE, {
+        variables: { titleId },
+        fetchPolicy: "no-cache"
+    });
 
     let noteData = null;
     let note = {};
