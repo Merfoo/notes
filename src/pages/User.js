@@ -20,6 +20,7 @@ function User() {
         {
             getUser(username: "${username}") {
                 createdAt
+                username
                 notes {
                     titleId
                     title
@@ -73,7 +74,7 @@ function User() {
             }
             {userData ? (
                 <animated.div style={fadeInProps}>
-                    <h2>{username}</h2>
+                    <h2>{userData.username}</h2>
                     <p>Joined: {new Date(createdAt).toLocaleDateString()}</p>
                     {notes.map(note => <NotePreview key={note.titleId} {...note} />)}
                 </animated.div>

@@ -84,6 +84,7 @@ function EditUser() {
         {
             getUser(username: "${username}") {
                 email
+                username
             }
         }
     `;
@@ -192,7 +193,7 @@ function EditUser() {
             }
             {userData ? (
                 <animated.div style={fadeInProps}>
-                    <h2>{username}</h2>
+                    <h2>{userData.username}</h2>
                     <form onSubmit={onSubmit}>
                     <div className="input-section">
                         <label>Email</label>

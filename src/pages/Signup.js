@@ -120,6 +120,9 @@ function Signup() {
     if (!username)
         usernameError = "Required";
 
+    else if (/[^a-zA-Z0-9_-]/g.test(username))
+        usernameError = "Only letters, numbers, hyphens, and underscores allowed";
+
     else if (mutationError.username)
         usernameError = mutationError.message;
 
