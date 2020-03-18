@@ -118,21 +118,19 @@ function Note() {
             }
             {noteData ? (
                 <animated.div style={fadeInProps}>
-                    <div>
-                        <div className="header">
-                            <h2 className="title">{note.title}</h2>
-                            <p className="is-private" hidden={!isOwner}>{note.isPrivate ? "Private" : "Public" }</p>
-                        </div>
-                        <div className="details">
-                            {isOwner ? 
-                                <p><NavLink to={`/notes/${titleId}/edit`} className="editable">Edit</NavLink></p>
-                            :
-                                <p>Creator <NavLink to={`/users/${note.username}`} className="username">{note.username}</NavLink></p>
-                            }
-                            <p>{timeAgo}</p>
-                        </div>
-                        <div className="note-body">{note.body}</div>
+                    <div className="header">
+                        <h2 className="title">{note.title}</h2>
+                        <p className="is-private" hidden={!isOwner}>{note.isPrivate ? "Private" : "Public" }</p>
                     </div>
+                    <div className="details">
+                        {isOwner ?
+                            <p><NavLink to={`/notes/${titleId}/edit`} className="editable">Edit</NavLink></p>
+                        :
+                            <p>Creator <NavLink to={`/users/${note.username}`} className="username">{note.username}</NavLink></p>
+                        }
+                        <p>{timeAgo}</p>
+                    </div>
+                    <div className="note-body">{note.body}</div>
                 </animated.div>
             ) : (
                 <animated.div style={fadeInProps}>

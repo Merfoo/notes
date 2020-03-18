@@ -66,7 +66,6 @@ function User() {
 
     return (
         <div css={styles}>
-            <h2>{username}</h2>
             {loading &&
                 <animated.div style={fadeOutProps}>
                     {loadingMessage}
@@ -74,6 +73,7 @@ function User() {
             }
             {userData ? (
                 <animated.div style={fadeInProps}>
+                    <h2>{username}</h2>
                     <p>Joined: {new Date(createdAt).toLocaleDateString()}</p>
                     {notes.map(note => <NotePreview key={note.titleId} {...note} />)}
                 </animated.div>

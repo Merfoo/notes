@@ -34,7 +34,7 @@ const styles = css`
         }
     }
 
-    .error-box {
+    .error-container {
         color: white;
 
         margin-top: 50px;
@@ -209,7 +209,7 @@ function Signup() {
                 </div>
                 <NiceButton type="submit" disabled={loading} isLoading={loading}>Signup</NiceButton>
             </form>
-            <div className="error-box" hidden={!mutationError.unknown}>
+            <div className="error-container" hidden={!mutationError.unknown}>
                 {mutationError.message}
             </div>
         </div>

@@ -111,7 +111,7 @@ function Navbar() {
                     { isLoggedIn ? (
                         <div className="links-section">
                             <NavLink to="/notes/create" activeClassName="active-navlink" onClick={hideDrawer}>Create</NavLink>
-                            <NavLink to="/profile" activeClassName="active-navlink" onClick={hideDrawer}>Profile</NavLink>
+                            <NavLink to="/profile" activeClassName="active-navlink" onClick={hideDrawer}>{username}</NavLink>
                         </div>
                     ) : (
                         <div className="links-section">

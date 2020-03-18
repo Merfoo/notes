@@ -1,6 +1,6 @@
 /** @jsx jsx */
 
-import { NavLink } from "react-router-dom";
+import { NavLink, useHistory } from "react-router-dom";
 import { css, jsx } from "@emotion/core";
 
 import { getTimeAgoString } from "../util";
@@ -14,6 +14,7 @@ const styles = css`
     
     :hover {
         box-shadow: 0 3px 9px rgba(0, 0, 0, 0.2);
+        cursor: pointer;
     }
 
     a {
@@ -55,13 +56,20 @@ const styles = css`
 `;
 
 function NotePreview({ titleId, title, username, createdAt, isPrivate, showIsPrivate, editable }) {
+    const history = useHistory();
+
     const timeAgo = getTimeAgoString(new Date(createdAt));
+    const noteUrl = `/notes/${titleId}`;
+
+    const noteClick = () => {
+        history.push(noteUrl);
+    };
 
     return (
         <div css={styles}>
-            <div className="header">
+            <div className="header" onClick={noteClick}>
                 <h3 className="title">
-                    <NavLink to={`/notes/${titleId}`}>{title}</NavLink>
+                    <NavLink to={noteUrl}>{title}</NavLink>
                 </h3>
                 <p className="is-private" hidden={!showIsPrivate}>{isPrivate ? "Private" : "Public"}</p>
             </div>

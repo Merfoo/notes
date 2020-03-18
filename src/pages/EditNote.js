@@ -177,43 +177,41 @@ function EditNote() {
             {noteData ? (
                 <animated.div style={fadeInProps}>
                     <div>
-                        <div>
-                            <h2 name="title">{note.title}</h2>
-                            <p className="last-posted">{timeAgo}</p>
+                        <h2 name="title">{note.title}</h2>
+                        <p className="last-posted">{timeAgo}</p>
+                    </div>
+                    <form onSubmit={handleSubmit(onSubmit, titleId)}>
+                        <div className="input-section">
+                            <textarea
+                                name="body"
+                                ref={register({
+                                    required: "Required"
+                                })}
+                                rows="20"
+                                defaultValue={note.body}
+                                disabled={editLoading || deleteLoading}
+                            />
+                            <div className="error-message">
+                                {errors.body && errors.body.message}
+                            </div>
                         </div>
-                        <form onSubmit={handleSubmit(onSubmit, titleId)}>
-                            <div className="input-section">
-                                <textarea
-                                    name="body"
-                                    ref={register({
-                                        required: "Required"
-                                    })}
-                                    rows="20"
-                                    defaultValue={note.body}
+                        <div className="input-section input-section-is-private">
+                            <label>
+                                <input
+                                    name="isPrivate"
+                                    type="checkbox"
+                                    ref={register()}
+                                    defaultChecked={note.isPrivate}
                                     disabled={editLoading || deleteLoading}
                                 />
-                                <div className="error-message">
-                                    {errors.body && errors.body.message}
-                                </div>
-                            </div>
-                            <div className="input-section input-section-is-private">
-                                <label>
-                                    <input
-                                        name="isPrivate"
-                                        type="checkbox"
-                                        ref={register()}
-                                        defaultChecked={note.isPrivate}
-                                        disabled={editLoading || deleteLoading}
-                                    />
-                                    Private
-                                </label>
-                            </div>
-                            <div className="buttons-container">
-                                <NiceButton type="submit" disabled={editLoading || deleteLoading} isLoading={editLoading}>Save</NiceButton>
-                                <NiceButton type="button" disabled={editLoading || deleteLoading} isLoading={deleteLoading} className="delete-button" onClick={deleteOnClick}>Delete</NiceButton>
-                            </div>
-                        </form>
-                    </div>
+                                Private
+                            </label>
+                        </div>
+                        <div className="buttons-container">
+                            <NiceButton type="submit" disabled={editLoading || deleteLoading} isLoading={editLoading}>Save</NiceButton>
+                            <NiceButton type="button" disabled={editLoading || deleteLoading} isLoading={deleteLoading} className="delete-button" onClick={deleteOnClick}>Delete</NiceButton>
+                        </div>
+                    </form>
                 </animated.div>
             ) : (
                 <animated.div style={fadeInProps}>

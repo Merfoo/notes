@@ -45,6 +45,11 @@ const styles = css`
         margin-top: 10px;
     }
 
+    .edit-link {
+        display: inline-block;
+        margin-top: 10px;
+    }
+
     .notes {
         margin-top: 20px;
     }
@@ -131,7 +136,7 @@ function Profile() {
                 <animated.div className="details" style={fadeInProps}>
                     <div>Email: {email}</div>
                     <div>Joined: {new Date(createdAt).toLocaleDateString()}</div>
-                    <NavLink to={`/users/${username}/edit`}>Edit</NavLink>
+                    <NavLink to={`/users/${username}/edit`} className="edit-link">Edit</NavLink>
 
                     <div className="notes">
                         {notes.map(note => <NotePreview key={note.titleId} {...note} showIsPrivate={true} editable={true} />)}
