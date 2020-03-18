@@ -20,6 +20,7 @@ import Signup from "./pages/Signup";
 import Login from "./pages/Login";
 import CreateNote from "./pages/CreateNote";
 import EditNote from "./pages/EditNote";
+import EditUser from "./pages/EditUser";
 import Note from "./pages/Note";
 import Profile from "./pages/Profile";
 import User from "./pages/User";
@@ -75,6 +76,7 @@ function App() {
                             <Route path="/notes/create" component={CreateNote} />
                             <Route path="/notes/:titleId/edit" component={EditNote} />
                             <Route path="/notes/:titleId" component={Note} />
+                            <Route path="/users/:id/edit" component={EditUser} />
                             <Route path="/users/:id" component={User} />
                             <Route path="/signup" component={Signup} />
                             <Route path="/login" component={Login} />

@@ -1,7 +1,7 @@
 /** @jsx jsx */
 
 import { useState } from "react";
-import { useHistory } from "react-router-dom";
+import { NavLink, useHistory } from "react-router-dom";
 import { useSpring, animated } from "react-spring";
 import { css, jsx } from "@emotion/core";
 
@@ -14,6 +14,15 @@ import { useQuery } from "@apollo/react-hooks";
 import NotePreview from "../components/NotePreview";
 
 const styles = css`
+    a {
+        text-decoration: none;
+        color: black;
+
+        :hover {
+            text-decoration: underline;
+        }
+    }
+
     .header {
         display: flex;
         flex-direction: row;
@@ -122,6 +131,7 @@ function Profile() {
                 <animated.div className="details" style={fadeInProps}>
                     <div>Email: {email}</div>
                     <div>Joined: {new Date(createdAt).toLocaleDateString()}</div>
+                    <NavLink to={`/users/${username}/edit`}>Edit</NavLink>
 
                     <div className="notes">
                         {notes.map(note => <NotePreview key={note.titleId} {...note} showIsPrivate={true} editable={true} />)}
