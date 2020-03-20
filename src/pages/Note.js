@@ -82,7 +82,7 @@ function Note() {
     let noteData = null;
     let note = {};
 
-    if (!loading && !error) {
+    if (data) {
         noteData = data.getNote;
 
         if (noteData) {

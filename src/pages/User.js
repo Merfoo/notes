@@ -37,7 +37,7 @@ function User() {
     let createdAt = "";
     let notes = [];
 
-    if (!loading && !error) {
+    if (data) {
         userData = data.getUser;
 
         if (userData) {

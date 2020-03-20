@@ -45,7 +45,7 @@ function Home() {
     useEffect(() => {
         setLoadingMessage(INIT_LOADING_MESSAGE);
         getPublicNotes({ variables: { filter: searchText } });
-    }, [searchText]);
+    }, [getPublicNotes, searchText]);
 
     let notes = [];
 
