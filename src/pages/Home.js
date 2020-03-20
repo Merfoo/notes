@@ -1,20 +1,27 @@
 /** @jsx jsx */
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSpring, animated } from "react-spring";
 import { css, jsx } from "@emotion/core";
 
 import gql from "graphql-tag";
-import { useQuery } from "@apollo/react-hooks";
+import { useLazyQuery } from "@apollo/react-hooks";
 
 import NotePreview from "../components/NotePreview";
 
 const styles = css`
+    .search-bar {
+        height: 35px;
+        width: 100%;
+
+        margin-bottom: 25px;
+        padding: 5px;
+    }
 `;
 
 const GET_PUBLIC_NOTES = gql`
-    {
-        getPublicNotes(orderBy: createdAt_DESC) {
+    query GetPublicNotes($filter: String!) {
+        getPublicNotes(orderBy: createdAt_DESC, filter: $filter) {
             notes {
                 titleId
                 title
@@ -28,13 +35,21 @@ const GET_PUBLIC_NOTES = gql`
     }
 `;
 
+const INIT_LOADING_MESSAGE = "Loading notes";
+
 function Home() {
-    const [loadingMessage, setLoadingMessage] = useState("Loading notes");
-    const { loading, error, data } = useQuery(GET_PUBLIC_NOTES, { fetchPolicy: "no-cache" });
+    const [loadingMessage, setLoadingMessage] = useState(INIT_LOADING_MESSAGE);
+    const [searchText, setSearchText] = useState("");
+    const [getPublicNotes, { loading, error, data }] = useLazyQuery(GET_PUBLIC_NOTES, { fetchPolicy: "no-cache" });
+
+    useEffect(() => {
+        setLoadingMessage(INIT_LOADING_MESSAGE);
+        getPublicNotes({ variables: { filter: searchText } });
+    }, [searchText]);
 
     let notes = [];
 
-    if (!loading && !error) {
+    if (data) {
         notes = data.getPublicNotes.notes;
 
         notes = notes.map(note => ({
@@ -57,13 +72,18 @@ function Home() {
     return (
         <div css={styles}>
             <h2>Recent Notes</h2>
+            <input type="search" placeholder="Search" className="search-bar" value={searchText} onChange={(e) => setSearchText(e.target.value)} />
             {loading ? (
                 <animated.div style={fadeOutProps}>
                     {loadingMessage}
                 </animated.div>
             ) : (
                 <animated.div style={fadeInProps}>
-                    {notes.map(note => <NotePreview key={note.titleId} {...note} />)}
+                    {notes.length > 0 ? (
+                        notes.map(note => <NotePreview key={note.titleId} {...note} />)
+                    ) : (
+                        <h3>No notes found :(</h3>
+                    )}
                 </animated.div>
             )}
             {error && <div>Error loading notes :(</div>}
