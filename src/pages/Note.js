@@ -1,7 +1,7 @@
 /** @jsx jsx */
 
-import { useState } from "react";
-import { NavLink, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { NavLink, useHistory, useLocation, useParams } from "react-router-dom";
 import { useSpring, animated } from "react-spring";
 import { css, jsx } from "@emotion/core";
 import { useSelector } from "react-redux";
@@ -72,6 +72,8 @@ const GET_NOTE = gql`
 `;
 
 function Note() {
+    const history = useHistory();
+    const location = useLocation();
     const { id } = useParams();
     const [ loadingMessage, setLoadingMessage ] = useState("Loading note");
 
@@ -82,22 +84,16 @@ function Note() {
         fetchPolicy: "no-cache"
     });
 
+    const username = useSelector(state => state.username);
+
+    let isOwner = false;
+    let timeAgo = "";
     let noteData = null;
-    let note = {};
 
     if (data) {
         noteData = data.getNote;
-
-        if (noteData) {
-            note = {
-                slug: noteData.slug,
-                title: noteData.title,
-                body: noteData.body,
-                createdAt: noteData.createdAt,
-                username: noteData.createdBy.username,
-                isPrivate: noteData.isPrivate
-            };
-        }
+        isOwner = username === noteData.createdBy.username;
+        timeAgo = getTimeAgoString(new Date(noteData.createdAt));
     }
 
     if (loading)
@@ -106,12 +102,20 @@ function Note() {
     if (error)
         console.log("Error loading note", error);
 
+    useEffect(() => {
+        if (noteData) {
+            const noteUrl = `/notes/${noteData.slug}`;
+
+            if (location.pathname !== noteUrl)
+                history.replace(noteUrl);
+        }
+
+    // ignore complaints about "history" being a missing dependancy in useEffect
+    // eslint-disable-next-line
+    }, [noteData, location.pathname]);
+
     const fadeOutProps = useSpring({ opacity: loading ? 1 : 0 });
     const fadeInProps = useSpring({ opacity: loading ? 0 : 1 });
-
-    const timeAgo = getTimeAgoString(new Date(note.createdAt));
-
-    const isOwner = (useSelector(state => state.username) === note.username);
 
     return (
         <div css={styles}>
@@ -123,18 +127,18 @@ function Note() {
             {noteData ? (
                 <animated.div style={fadeInProps}>
                     <div className="header">
-                        <h2 className="title">{note.title}</h2>
-                        <p className="is-private" hidden={!isOwner}>{note.isPrivate ? "Private" : "Public" }</p>
+                        <h2 className="title">{noteData.title}</h2>
+                        <p className="is-private" hidden={!isOwner}>{noteData.isPrivate ? "Private" : "Public" }</p>
                     </div>
                     <div className="details">
                         {isOwner ?
-                            <p><NavLink to={`/notes/${note.slug}/edit`} className="editable">Edit</NavLink></p>
+                            <p><NavLink to={`/notes/${noteData.slug}/edit`} className="editable">Edit</NavLink></p>
                         :
-                            <p>Creator <NavLink to={`/users/${note.username}`} className="username">{note.username}</NavLink></p>
+                            <p>Creator <NavLink to={`/users/${noteData.createdBy.username}`} className="username">{noteData.createdBy.username}</NavLink></p>
                         }
                         <p>{timeAgo}</p>
                     </div>
-                    <div className="note-body">{note.body}</div>
+                    <div className="note-body">{noteData.body}</div>
                 </animated.div>
             ) : (
                 <animated.div style={fadeInProps}>
