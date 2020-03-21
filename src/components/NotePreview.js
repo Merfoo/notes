@@ -55,11 +55,11 @@ const styles = css`
     }
 `;
 
-function NotePreview({ titleId, title, username, createdAt, isPrivate, showIsPrivate, editable }) {
+function NotePreview({ slug, title, username, createdAt, isPrivate, showIsPrivate, editable }) {
     const history = useHistory();
 
     const timeAgo = getTimeAgoString(new Date(createdAt));
-    const noteUrl = `/notes/${titleId}`;
+    const noteUrl = `/notes/${slug}`;
 
     const noteClick = () => {
         history.push(noteUrl);
@@ -75,7 +75,7 @@ function NotePreview({ titleId, title, username, createdAt, isPrivate, showIsPri
             </div>
             <div className="details">
                 {editable ? 
-                    <NavLink to={`/notes/${titleId}/edit`} className="editable">Edit</NavLink>
+                    <NavLink to={`/notes/${slug}/edit`} className="editable">Edit</NavLink>
                 :
                     <p>Creator <NavLink to={`/users/${username}`} className="username">{username}</NavLink></p>
                 }

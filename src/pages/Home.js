@@ -23,7 +23,7 @@ const GET_PUBLIC_NOTES = gql`
     query GetPublicNotes($filter: String!) {
         getPublicNotes(orderBy: createdAt_DESC, filter: $filter) {
             notes {
-                titleId
+                slug
                 title
                 createdAt
                 createdBy {
@@ -53,7 +53,7 @@ function Home() {
         notes = data.getPublicNotes.notes;
 
         notes = notes.map(note => ({
-            titleId: note.titleId,
+            slug: note.slug,
             title: note.title,
             createdAt: note.createdAt,
             username: note.createdBy.username
@@ -80,7 +80,7 @@ function Home() {
             ) : (
                 <animated.div style={fadeInProps}>
                     {notes.length > 0 ? (
-                        notes.map(note => <NotePreview key={note.titleId} {...note} />)
+                        notes.map(note => <NotePreview key={note.slug} {...note} />)
                     ) : (
                         <h3>No notes found :(</h3>
                     )}

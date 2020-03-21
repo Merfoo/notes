@@ -22,7 +22,7 @@ function User() {
                 createdAt
                 username
                 notes {
-                    titleId
+                    slug
                     title
                     createdAt
                 }
@@ -45,7 +45,7 @@ function User() {
             notes = userData.notes;
 
             notes = notes.map(note => ({
-                titleId: note.titleId,
+                slug: note.slug,
                 title: note.title,
                 createdAt: note.createdAt,
                 username
@@ -76,7 +76,7 @@ function User() {
                 <animated.div style={fadeInProps}>
                     <h2>{userData.username}</h2>
                     <p>Joined: {new Date(createdAt).toLocaleDateString()}</p>
-                    {notes.map(note => <NotePreview key={note.titleId} {...note} />)}
+                    {notes.map(note => <NotePreview key={note.slug} {...note} />)}
                 </animated.div>
             ) : (
                 <animated.div style={fadeInProps}>

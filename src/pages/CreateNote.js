@@ -63,7 +63,7 @@ const styles = css`
 const CREATE_NOTE = gql`
     mutation CreateNote($title: String!, $body: String!, $isPrivate: Boolean!) {
         createNote(title: $title, body: $body, isPrivate: $isPrivate) {
-            titleId
+            slug
         }
     }
 `;
@@ -79,9 +79,9 @@ function CreateNote() {
     const onSubmit = ({ title, body, isPrivate }) => {
         createNote({ variables: { title, body, isPrivate } })
             .then((res) => {
-                const { titleId } = res.data.createNote;
+                const { slug } = res.data.createNote;
 
-                history.push("/notes/" + titleId);
+                history.push("/notes/" + slug);
             })
             .catch((e) => {
                 console.log("Note creation failed");

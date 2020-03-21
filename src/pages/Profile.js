@@ -66,7 +66,7 @@ function Profile() {
                 email
                 createdAt
                 notes {
-                    titleId
+                    slug
                     title
                     createdAt
                     isPrivate
@@ -92,7 +92,7 @@ function Profile() {
             notes = userData.notes;
 
             notes = notes.map((note) => ({
-                titleId: note.titleId,
+                slug: note.slug,
                 title: note.title,
                 createdAt: note.createdAt,
                 isPrivate: note.isPrivate
@@ -139,7 +139,7 @@ function Profile() {
                     <NavLink to={`/users/${username}/edit`} className="edit-link">Edit</NavLink>
 
                     <div className="notes">
-                        {notes.map(note => <NotePreview key={note.titleId} {...note} showIsPrivate={true} editable={true} />)}
+                        {notes.map(note => <NotePreview key={note.slug} {...note} showIsPrivate={true} editable={true} />)}
                     </div>
                 </animated.div>
             ) : (

@@ -6,10 +6,10 @@ import { useSpring, animated } from "react-spring";
 import { css, jsx } from "@emotion/core";
 import { useSelector } from "react-redux";
 
-import { useQuery } from '@apollo/react-hooks';
 import gql from "graphql-tag";
+import { useQuery } from '@apollo/react-hooks';
 
-import { getTimeAgoString } from "../util";
+import { getTimeAgoString, getSlugId } from "../util";
 
 const styles = css`
     a {
@@ -57,9 +57,9 @@ const styles = css`
 `;
 
 const GET_NOTE = gql`
-    query GetNote($titleId: String!) {
-        getNote(titleId: $titleId) {
-            id
+    query GetNote($slugId: String!) {
+        getNote(slugId: $slugId) {
+            slug
             title
             body
             isPrivate
@@ -72,10 +72,13 @@ const GET_NOTE = gql`
 `;
 
 function Note() {
-    const { titleId } = useParams();
+    const { id } = useParams();
     const [ loadingMessage, setLoadingMessage ] = useState("Loading note");
+
+    const slugId = getSlugId(id);
+
     const { data, loading, error } = useQuery(GET_NOTE, {
-        variables: { titleId },
+        variables: { slugId },
         fetchPolicy: "no-cache"
     });
 
@@ -87,12 +90,13 @@ function Note() {
 
         if (noteData) {
             note = {
+                slug: noteData.slug,
                 title: noteData.title,
                 body: noteData.body,
                 createdAt: noteData.createdAt,
                 username: noteData.createdBy.username,
                 isPrivate: noteData.isPrivate
-            }
+            };
         }
     }
 
@@ -124,7 +128,7 @@ function Note() {
                     </div>
                     <div className="details">
                         {isOwner ?
-                            <p><NavLink to={`/notes/${titleId}/edit`} className="editable">Edit</NavLink></p>
+                            <p><NavLink to={`/notes/${note.slug}/edit`} className="editable">Edit</NavLink></p>
                         :
                             <p>Creator <NavLink to={`/users/${note.username}`} className="username">{note.username}</NavLink></p>
                         }

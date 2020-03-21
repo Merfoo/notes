@@ -74,8 +74,8 @@ function App() {
                     <main css={mainStyles}>
                         <Switch>
                             <Route path="/notes/create" component={CreateNote} />
-                            <Route path="/notes/:titleId/edit" component={EditNote} />
-                            <Route path="/notes/:titleId" component={Note} />
+                            <Route path="/notes/:id/edit" component={EditNote} />
+                            <Route path="/notes/:id" component={Note} />
                             <Route path="/users/:id/edit" component={EditUser} />
                             <Route path="/users/:id" component={User} />
                             <Route path="/signup" component={Signup} />

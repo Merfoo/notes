@@ -44,3 +44,12 @@ export const getTimeAgoString = (startDate) => {
 
     return "Time is not real";
 };
+
+export const getSlugId = (slug) => {
+    const splitIndex = slug.lastIndexOf("-");
+
+    if (splitIndex === -1)
+        return "";
+
+    return slug.substring(splitIndex + 1);
+};

@@ -7,10 +7,11 @@ import { css, jsx } from "@emotion/core";
 import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 
-import { useQuery, useMutation } from '@apollo/react-hooks';
 import gql from "graphql-tag";
+import { useQuery, useMutation } from '@apollo/react-hooks';
 
-import { getTimeAgoString } from "../util";
+import { getSlugId } from "../util";
+
 import NiceButton from "../components/NiceButton";
 
 const styles = css`
@@ -64,11 +65,10 @@ const styles = css`
 `;
 
 const GET_NOTE = gql`
-    query GetNote($titleId: String!) {
-        getNote(titleId: $titleId) {
+    query GetNote($slugId: String!) {
+        getNote(slugId: $slugId) {
             title
             body
-            createdAt
             isPrivate
             createdBy {
                 username
@@ -78,30 +78,30 @@ const GET_NOTE = gql`
 `;
 
 const EDIT_NOTE = gql`
-    mutation EditNote($titleId: String!, $body: String!, $isPrivate: Boolean!) {
-        updateNote(titleId: $titleId, body: $body, isPrivate: $isPrivate) {
-            id
-            body
-            isPrivate
+    mutation EditNote($slugId: String!, $title: String!, $body: String!, $isPrivate: Boolean!) {
+        updateNote(slugId: $slugId, title: $title, body: $body, isPrivate: $isPrivate) {
+            slug
         }
     }
 `;
 
 const DELETE_NOTE = gql`
-    mutation DeleteNote($titleId: String!) {
-        deleteNote(titleId: $titleId) {
-            titleId
+    mutation DeleteNote($slugId: String!) {
+        deleteNote(slugId: $slugId) {
+            slug
         }
     }
 `;
 
 function EditNote() {
-    const { titleId } = useParams();
+    const { id } = useParams();
     const history = useHistory();
     const [ loadingMessage, setLoadingMessage ] = useState("Loading note");
 
+    const slugId = getSlugId(id);
+
     const { data, loading, error } = useQuery(GET_NOTE, {
-        variables: { titleId },
+        variables: { slugId },
         fetchPolicy: "no-cache"
     });
 
@@ -110,10 +110,12 @@ function EditNote() {
 
     const { register, handleSubmit, errors } = useForm();
 
-    const onSubmit = ({ body, isPrivate }) => {
-        editNote({ variables: { titleId, body, isPrivate } })
+    const onSubmit = ({ title, body, isPrivate }) => {
+        editNote({ variables: { slugId, title, body, isPrivate } })
             .then((res) => {
-                history.push("/notes/" + titleId);
+                const { slug } = res.data.updateNote;
+
+                history.push("/notes/" + slug);
             })
             .catch((e) => {
                 console.log("Note editing failed");
@@ -123,7 +125,7 @@ function EditNote() {
 
     const deleteOnClick = () => {
         if (window.confirm("Delete note?")) {
-            deleteNote({ variables: { titleId } })
+            deleteNote({ variables: { slugId } })
                 .then((res) => {
                     history.push("/");
                 })
@@ -145,7 +147,6 @@ function EditNote() {
             note = {
                 title: noteData.title,
                 body: noteData.body,
-                createdAt: noteData.createdAt,
                 isPrivate: noteData.isPrivate,
                 username: noteData.createdBy.username
             }
@@ -165,8 +166,6 @@ function EditNote() {
     const fadeOutProps = useSpring({ opacity: loading ? 1 : 0 });
     const fadeInProps = useSpring({ opacity: loading ? 0 : 1 });
 
-    const timeAgo = getTimeAgoString(new Date(note.createdAt));
-
     return (
         <div css={styles}>
             {loading &&
@@ -176,12 +175,23 @@ function EditNote() {
             }
             {noteData ? (
                 <animated.div style={fadeInProps}>
-                    <div>
-                        <h2 name="title">{note.title}</h2>
-                        <p className="last-posted">{timeAgo}</p>
-                    </div>
-                    <form onSubmit={handleSubmit(onSubmit, titleId)}>
+                    <form onSubmit={handleSubmit(onSubmit)}>
                         <div className="input-section">
+                            <label>Title</label>
+                            <input
+                                name="title"
+                                ref={register({
+                                    required: "Required"
+                                })}
+                                defaultValue={note.title}
+                                disabled={editLoading || deleteLoading}
+                            />
+                            <div className="error-message">
+                                {errors.title && errors.title.message}
+                            </div>
+                        </div>
+                        <div className="input-section">
+                            <label>Body</label>
                             <textarea
                                 name="body"
                                 ref={register({
